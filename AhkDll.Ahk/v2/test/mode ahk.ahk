@@ -1,0 +1,9 @@
+; Run Notepad, type "Hello world!" and then select all text by mouse.
+
+Send("#r")
+WinWaitActive("ahk_class #32770")
+Send("notepad`n")
+
+WinWaitActive("ahk_exe notepad.exe")
+Send("Hello world+1")
+MouseClickDrag("Left", 0, 0, 150, 50)
