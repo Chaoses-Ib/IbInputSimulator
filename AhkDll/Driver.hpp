@@ -253,18 +253,14 @@ private:
     }
 
 public:
-    void report_mouse(MouseReport report) const {
+    void report_mouse(MouseReport report, int8_t compensate_switch) const {
         constexpr DWORD IOCTL_BUSENUM_PLAY_MOUSEMOVE = 0x2A2010;
         DWORD bytes_returned;
 
         if (has_acceleration && (report.x || report.y)) {
             MouseReport report11 = report;
-            report.x = report.y = 1;
+            report11.x = report11.y = compensate_switch;
             DeviceIoControl(device, IOCTL_BUSENUM_PLAY_MOUSEMOVE, &report11, sizeof MouseReport, nullptr, 0, &bytes_returned, nullptr);
-            /*
-            report11.x = -report11.x;
-            report11.y = -report11.y;
-            */
 
             report.x = compensate_lgs_acceleration(report.x);
             report.y = compensate_lgs_acceleration(report.y);
@@ -550,6 +546,7 @@ public:
 
 private:
     LogiDriver::MouseReport mouse_report{};
+    uint8_t compensate_switch = -1;
     std::mutex mouse_mutex;
 
 public:
@@ -600,7 +597,7 @@ public:
                         mouse_report.y = 0;
                     }
 
-                    driver.report_mouse(mouse_report);
+                    driver.report_mouse(mouse_report, compensate_switch = -compensate_switch);
                 }
 
                 mouse_report.x = (uint8_t)mi.dx;
@@ -626,7 +623,7 @@ public:
                 }
             }
             
-            driver.report_mouse(mouse_report);
+            driver.report_mouse(mouse_report, compensate_switch = -compensate_switch);
         }
     }
 
