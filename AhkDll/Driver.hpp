@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <string>
+#include <mutex>
 #include <Windows.h>
 #include <winternl.h>
 #include <rapidjson/document.h>
@@ -549,9 +550,12 @@ public:
 
 private:
     LogiDriver::MouseReport mouse_report{};
+    std::mutex mouse_mutex;
 
 public:
     void send_mouse_input(INPUT inputs[], uint32_t n) {
+        std::lock_guard lock(mouse_mutex);
+
         for (uint32_t i = 0; i < n; i++) {
             MOUSEINPUT& mi = inputs[i].mi;
             if constexpr (debug)
@@ -628,6 +632,7 @@ public:
 
 private:
     LogiDriver::KeyboardReport keyboard_report{};
+    std::mutex keyboard_mutex;
 
 public:
     SHORT get_key_state(int vKey, decltype(GetAsyncKeyState) fallback) {
@@ -649,6 +654,8 @@ public:
     }
 
     void sync_key_states() {
+        std::lock_guard lock(keyboard_mutex);
+
         //#TODO: GetKeyboardState() ?
         //static bool states[256];  //down := true
 #define CODE_GENERATE(vk, member)  keyboard_report.modifier.##member = GetAsyncKeyState(vk) & 0x8000;
@@ -665,6 +672,8 @@ public:
     }
 
     void send_keyboard_input(INPUT inputs[], uint32_t n) {
+        std::lock_guard lock(keyboard_mutex);
+
         for (uint32_t i = 0; i < n; i++) {
             bool keydown = !(inputs[i].ki.dwFlags & KEYEVENTF_KEYUP);
             switch (inputs[i].ki.wVk) {
