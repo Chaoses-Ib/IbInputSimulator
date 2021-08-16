@@ -29,12 +29,12 @@ IbSendInit(mode := 0){
 IbSendMode(mode){
     static ahk_mode := ""
     if (mode == 1){
-        DllCall("IbAhkSend\IbAhkSendInputHookBegin")
+        DllCall("IbAhkSend\IbAhkSendInputHook", "Int", 1)
         ahk_mode := A_SendMode
         SendMode Input
     } else if (mode == 0){
         SendMode %ahk_mode%
-        DllCall("IbAhkSend\IbAhkSendInputHookEnd")
+        DllCall("IbAhkSend\IbAhkSendInputHook", "Int", 0)
     } else {
         throw "Invalid argument"
     }
@@ -45,9 +45,12 @@ IbSendDestroy(){
     ;DllCall("FreeLibrary", "Ptr", hModule)
 }
 
+IbSyncKeyStates(){
+    DllCall("IbAhkSend\IbAhkSendSyncKeyStates")
+}
 
 IbSend(keys){
-    DllCall("IbAhkSend\IbAhkSendInputHookBegin")  ;or IbSendMode(1)
+    DllCall("IbAhkSend\IbAhkSendInputHook", "Int", 1)  ;or IbSendMode(1)
     SendInput %keys%
-    DllCall("IbAhkSend\IbAhkSendInputHookEnd")  ;or IbSendMode(0)
+    DllCall("IbAhkSend\IbAhkSendInputHook", "Int", 0)  ;or IbSendMode(0)
 }

@@ -27,7 +27,7 @@
     <ClInclude Include="common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="import.hpp">
+    <ClInclude Include="IbAhkSend.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

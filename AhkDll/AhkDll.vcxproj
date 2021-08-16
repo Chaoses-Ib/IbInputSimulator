@@ -168,7 +168,7 @@
     <ClInclude Include="common.hpp" />
     <ClInclude Include="Driver.hpp" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="import.hpp" />
+    <ClInclude Include="IbAhkSend.hpp" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
