@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\SendTypes">
+      <UniqueIdentifier>{229d1540-5c12-4cc0-b2c5-98a5630b8472}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -21,14 +24,20 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Driver.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IbAhkSend.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SendTypes\Logitech.hpp">
+      <Filter>Header Files\SendTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="SendTypes\SendType.hpp">
+      <Filter>Header Files\SendTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="SendTypes\SendInput.hpp">
+      <Filter>Header Files\SendTypes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,7 +6,7 @@
 
 #DllLoad "*i IbAhkSend.dll"  ;DllCall("LoadLibrary") cannot locate DLL correctly
 
-IbSendInit(mode := 0){
+IbSendInit(send_type := "AnyDriver", mode := 1){
     static hModule := DllCall("GetModuleHandle", "Str", "IbAhkSend.dll", "Ptr")
     if (hModule == 0){
         if (A_PtrSize == 4)
@@ -15,17 +15,29 @@ IbSendInit(mode := 0){
             throw "LibLoadingFailed"
     }
     
-    result := DllCall("IbAhkSend\IbAhkSendInit", "Int", 0, "Int", 0, "Ptr", 0, "Int")
-    if (result != 0){
+    send_type_table := ["AnyDriver", "SendInput", "Logitech"]
+    send_type_v := 0
+    for i, e in send_type_table
+    {
+        if (e == send_type){
+            send_type_v := i
+            break
+        }
+    }
+    if (send_type_v == 0)
+        throw "Invalid send type"
+    send_type_v := send_type_v - 1
+
+    result := DllCall("IbAhkSend\IbAhkSendInit", "Int", send_type_v, "Int", 0, "Ptr", 0, "Int")
+    if (result !== 0){
         error_text := [
             "DeviceNotFound",
-            "DeviceOpeningFailed",
-            "LogiSettingsNotFound"
+            "DeviceOpeningFailed"
         ]
         throw error_text[result]
     }
 
-    if (mode != 0){
+    if (mode !== 0){
         IbSendMode(mode)
     }
 }

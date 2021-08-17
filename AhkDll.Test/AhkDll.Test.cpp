@@ -108,7 +108,9 @@ public:
 				_mm_pause();
 			capture = false;
 		}
-		uint64_t t2 = measure.end();  //0.8~4ms
+		uint64_t t2 = measure.end();
+		//SendInput: 600ns (0)  //#TODO: bug for unknown reason
+		//Logitech: 0.8~4ms
 
 		{
 			std::lock_guard lock(mutex);
@@ -145,19 +147,26 @@ public:
 	}
 
 	void MeasureMouseMoveDuration() {
+		Measure t;
+
+		t.begin();
 		INPUT input;
 		input.type = INPUT_MOUSE;
 		input.mi = {};
-		input.mi.dwFlags = MOUSEEVENTF_MOVE_NOCOALESCE;
+		input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_MOVE_NOCOALESCE;
 		for (size_t i = 0; i < 10000 / 200; i++) {
 			input.mi.dx = input.mi.dy = 1;
 			for (size_t i = 0; i < 100; i++)
-				IbAhkSendInput(1, &input, sizeof INPUT);  //≈3us
+				IbAhkSendInput(1, &input, sizeof INPUT);
 
 			input.mi.dx = input.mi.dy = -1;
 			for (size_t i = 0; i < 100; i++)
 				IbAhkSendInput(1, &input, sizeof INPUT);
 		}
+		uint64_t d = t.end();
+		Logger::WriteMessage(fmt::format("{}ns\n", d / 10000).c_str());
+		//SendInput: 245us
+		//Logitech: 3us
 	}
 
 	void MeasureMouseMovement() {
@@ -167,7 +176,7 @@ public:
 		INPUT input;
 		input.type = INPUT_MOUSE;
 		input.mi = {};
-		input.mi.dwFlags = MOUSEEVENTF_MOVE_NOCOALESCE;
+		input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_MOVE_NOCOALESCE;
 		input.mi.dx = input.mi.dy = 100;
 		IbAhkSendInput(1, &input, sizeof INPUT);
 
@@ -205,6 +214,12 @@ namespace AnyDriverTest
 {
 	CODE_GENERATE_KEYBOARDTEST(AnyDriver)
 	CODE_GENERATE_MOUSETEST(AnyDriver)
+}
+
+namespace SendInputTest
+{
+	CODE_GENERATE_KEYBOARDTEST(SendInput)
+	CODE_GENERATE_MOUSETEST(SendInput)
 }
 
 namespace LogitechTest

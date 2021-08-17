@@ -19,7 +19,7 @@ An [AutoHotkey](https://www.autohotkey.com/) library that enables AHK to send ke
 <br/>
 #Include "IbAhkSend.ahk"
 <br/>
-IbSendInit(1)
+IbSendInit()  ; IbSendInit("AnyDriver", 1)
 <br/>
 Send("#r")
 WinWaitActive("ahk_class #32770")
@@ -34,7 +34,7 @@ MouseClickDrag("Left", 5, 5, 150, 50)</pre></td>
 <br/>
 #Include IbAhkSend.ahk
 <br/>
-IbSendInit(1)
+IbSendInit() ; IbSendInit("AnyDriver", 1)
 <br/>
 Send #r
 WinWaitActive, ahk_class #32770

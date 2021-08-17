@@ -17,6 +17,7 @@ namespace Send {
 
     enum class SendType : uint32_t {
         AnyDriver,
+        SendInput,
         Logitech
     };
 

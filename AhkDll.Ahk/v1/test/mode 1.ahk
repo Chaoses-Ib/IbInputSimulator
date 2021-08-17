@@ -3,10 +3,7 @@
 
 #Include ..\IbAhkSend.ahk
 
-IbSendInit(1)
-; or:
-;IbSendInit()
-;IbSendMode(1)
+IbSendInit()
 
 Send #r
 WinWaitActive, ahk_class #32770

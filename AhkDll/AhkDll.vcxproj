@@ -166,10 +166,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="common.hpp" />
-    <ClInclude Include="Driver.hpp" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="IbAhkSend.hpp" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SendTypes\Logitech.hpp" />
+    <ClInclude Include="SendTypes\SendInput.hpp" />
+    <ClInclude Include="SendTypes\SendType.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />

@@ -3,7 +3,7 @@
 
 #Include "..\IbAhkSend.ahk"
 
-IbSendInit()
+IbSendInit("AnyDriver", 0)
 
 IbSend("#r")
 WinWaitActive("ahk_class #32770")

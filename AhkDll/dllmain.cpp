@@ -2,7 +2,9 @@
 #include "IbAhkSend.hpp"
 using namespace Send;
 
-#include "Driver.hpp"
+#include "SendTypes/SendType.hpp"
+#include "SendTypes/SendInput.hpp"
+#include "SendTypes/Logitech.hpp"
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -24,44 +26,16 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     return TRUE;
 }
 
-static LogiDriver driver;
-static ib::HolderB<DriverSendInput> send;
-
-DLLAPI Send::Error __stdcall IbAhkSendInit(SendType type, InitFlags flags, void* argument) {
-    if (Error error = driver.create(); error != Error::Success)
-        return error;
-
-    send.create(driver);
-    return Error::Success;
-}
-
-DLLAPI void __stdcall IbAhkSendDestroy() {
-    IbAhkSendInputHook(HookCode::Destroy);
-
-    if (!send.has_created())
-        return;
-    send.destroy();
-    driver.destroy();
-}
-
-DLLAPI void __stdcall IbAhkSendSyncKeyStates() {
-    send->sync_key_states();
-}
-
-DLLAPI UINT WINAPI IbAhkSendInput(UINT cInputs, LPINPUT pInputs, int cbSize) {
-    send->send_input(pInputs, cInputs);
-    return cInputs;  //#TODO
-}
-
+static std::unique_ptr<Type::Base> send;
 
 class SendInputHook {
+public:
     static inline decltype(SendInput)* SendInput_real = SendInput;
     static UINT WINAPI SendInput_detour(UINT cInputs, LPINPUT pInputs, int cbSize) {
         if (!hook)
             return SendInput_real(cInputs, pInputs, cbSize);
 
-        send->send_input(pInputs, cInputs);
-        return cInputs;
+        return send->send_input(pInputs, cInputs);
     }
 
     //#TODO: only needed when two or more AHK processes exist?
@@ -71,9 +45,10 @@ class SendInputHook {
             return GetAsyncKeyState_real(vKey);
 
         if constexpr (debug)
-            DebugOStream() << L"GetAsyncKeyState: " << vKey << ", " << send->get_key_state(vKey, GetAsyncKeyState_real) << std::endl;
-        return send->get_key_state(vKey, GetAsyncKeyState_real);
+            DebugOStream() << L"GetAsyncKeyState: " << vKey << ", " << send->get_key_state(vKey) << std::endl;
+        return send->get_key_state(vKey);
     }
+
 public:
     static inline bool hook;
 
@@ -107,4 +82,43 @@ DLLAPI void __stdcall IbAhkSendInputHook(HookCode code) {
         sendinput_hook->hook = false;
         break;
     }
+}
+
+
+DLLAPI Send::Error __stdcall IbAhkSendInit(SendType type, InitFlags flags, void* argument) {
+    if (type == SendType::AnyDriver) {
+        return IbAhkSendInit(SendType::Logitech, flags, argument);
+    }
+    else {
+        switch (type) {
+        case SendType::SendInput:
+            send.reset(dynamic_cast<Type::Base*>(new Type::SendInput(&SendInputHook::SendInput_real)));  //ib::auto_dynamic_cast
+            break;
+        case SendType::Logitech:
+            send.reset(dynamic_cast<Type::Base*>(new Type::Logitech()));
+            break;
+        }
+        send->base_create(&SendInputHook::GetAsyncKeyState_real);
+        if (Error error = send->create(); error != Error::Success)
+            return error;
+
+        return Error::Success;
+    }
+}
+
+DLLAPI void __stdcall IbAhkSendDestroy() {
+    IbAhkSendInputHook(HookCode::Destroy);
+
+    if (!send)
+        return;
+    send->destroy();
+    send.release();
+}
+
+DLLAPI void __stdcall IbAhkSendSyncKeyStates() {
+    send->sync_key_states();
+}
+
+DLLAPI UINT WINAPI IbAhkSendInput(UINT cInputs, LPINPUT pInputs, int cbSize) {
+    return send->send_input(pInputs, cInputs);
 }
