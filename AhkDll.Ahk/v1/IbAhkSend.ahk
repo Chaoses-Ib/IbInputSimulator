@@ -15,7 +15,7 @@ IbSendInit(mode := 0){
             throw "LibLoadingFailed"
     }
 
-    result := DllCall("IbAhkSend\IbAhkSendInit", "Int")
+    result := DllCall("IbAhkSend\IbAhkSendInit", "Int", 0, "Int", 0, "Ptr", 0, "Int")
     if (result != 0){
         error_text := ["DeviceNotFound", "DeviceOpeningFailed", "LogiSettingsNotFound"]
         throw error_text[result]

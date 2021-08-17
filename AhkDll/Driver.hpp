@@ -42,13 +42,6 @@ class LogiDriver {
     bool has_acceleration;
 
 public:
-    enum class Error {
-        Success,
-        DeviceNotFound,
-        DeviceOpeningFailed,
-        LogiSettingsNotFound
-    };
-
     Error create() {
         std::wstring device_name = find_device();
         if (device_name.empty())

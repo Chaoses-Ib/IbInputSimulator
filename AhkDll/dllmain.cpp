@@ -1,6 +1,4 @@
 ﻿#include "pch.h"
-
-#define IB_AHKSEND_DLLEXPORT
 #include "IbAhkSend.hpp"
 using namespace Send;
 
@@ -29,13 +27,12 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 static LogiDriver driver;
 static ib::HolderB<DriverSendInput> send;
 
-DLLAPI int __stdcall IbAhkSendInit() {
-    LogiDriver::Error error = driver.create();
-    if (error != LogiDriver::Error::Success)
-        return (int)error;
+DLLAPI Send::Error __stdcall IbAhkSendInit(SendType type, InitFlags flags, void* argument) {
+    if (Error error = driver.create(); error != Error::Success)
+        return error;
 
     send.create(driver);
-    return 0;
+    return Error::Success;
 }
 
 DLLAPI void __stdcall IbAhkSendDestroy() {
