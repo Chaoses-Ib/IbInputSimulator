@@ -2,6 +2,7 @@
 #include <thread>
 #include <mutex>
 #include <queue>
+#include <fmt/core.h>
 #include "CppUnitTest.h"
 
 #include <IbWinCppLib/WinCppLib.hpp>
@@ -45,11 +46,13 @@ namespace AhkDllTest
 	{
 	public:
 		static inline HHOOK hook;
+		static inline bool capture;
 		static inline std::queue<DWORD> input_keys;
 		static inline std::mutex mutex;
 
 		TEST_CLASS_INITIALIZE(Init)
 		{
+			capture = false;
 			std::thread t([] {
 				hook = SetWindowsHookExW(WH_KEYBOARD_LL, LowLevelKeyboardProc, GetModuleHandle(0), 0);
 				Assert::AreNotEqual<void*>(NULL, hook);
@@ -69,7 +72,7 @@ namespace AhkDllTest
 			_In_ WPARAM wParam,
 			_In_ LPARAM lParam
 		) {
-			if (nCode == HC_ACTION) {
+			if (capture && nCode == HC_ACTION) {
 				KBDLLHOOKSTRUCT* p = ib::Addr(lParam);
 				{
 					std::lock_guard lock(mutex);
@@ -84,9 +87,6 @@ namespace AhkDllTest
 
 			measure.begin();
 			{
-				LARGE_INTEGER t1, t2;
-				QueryPerformanceCounter(&t1);
-
 				INPUT input[2];
 
 				input[0].type = INPUT_KEYBOARD;
@@ -98,24 +98,31 @@ namespace AhkDllTest
 				input[1].ki.wVk = VK_F12;
 				input[1].ki.dwFlags = KEYEVENTF_KEYUP;
 
+				capture = true;
 				IbAhkSendInput(2, input, sizeof INPUT);
 			}
 			uint64_t t1 = measure.end();
 
 			measure.begin();
-			while (input_keys.size() < 2)
-				_mm_pause();
-			uint64_t t2 = measure.end();  //0.8~4ms
+			{
+				while (input_keys.size() < 1)  //#TODO: ?
+					_mm_pause();
+				capture = false;
+			}
+			uint64_t t2 = measure.end();  //0.4~2ms
+
 			{
 				std::lock_guard lock(mutex);
 				Assert::AreEqual<DWORD>(VK_F12, input_keys.back());
 				input_keys.pop();
+				/*
 				Assert::AreEqual<DWORD>(VK_F12, input_keys.back());
 				input_keys.pop();
+				*/
 			}
-
-			Logger::WriteMessage((std::to_wstring(t1) + L"\n").c_str());
-			Logger::WriteMessage((std::to_wstring(t2) + L"\n").c_str());
+			
+			Logger::WriteMessage(fmt::format("Duration: {}ns\n", t1).c_str());
+			Logger::WriteMessage(fmt::format("Latency: {}ns\n", t2).c_str());
 		}
 
 		TEST_CLASS_CLEANUP(Cleanup) {
@@ -160,8 +167,8 @@ namespace AhkDllTest
 			GetCursorPos(&p2);
 			d2 = { p2.x - p1.x, p2.y - p1.y };
 
-			Logger::WriteMessage((std::to_wstring(d1.x) + L", " + std::to_wstring(d1.y) + L"\n").c_str());
-			Logger::WriteMessage((std::to_wstring(d2.x) + L", " + std::to_wstring(d2.y) + L"\n").c_str());
+			Logger::WriteMessage(fmt::format("0ms: ({}, {})\n", d1.x, d1.y).c_str());
+			Logger::WriteMessage(fmt::format("10ms: ({}, {})\n", d2.x, d2.y).c_str());
 		}
 	};
 }
