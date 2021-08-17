@@ -7,20 +7,48 @@
 #include <IbWinCppLib/WinCppLib.hpp>
 #include "../AhkDll/IbAhkSend.hpp"
 
-#pragma comment(lib, "winmm.lib")
-
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace AhkDllTest
 {
-	TEST_CLASS(AhkDllTest)
+	TEST_MODULE_INITIALIZE(TestInit) {
+		int error = IbAhkSendInit();
+		Assert::AreEqual(0, error);
+	}
+
+	TEST_MODULE_CLEANUP(TestDestroy) {
+		IbAhkSendDestroy();
+	}
+
+	class Measure {
+		LARGE_INTEGER t;
+		double frequency_ns;
+	public:
+		Measure() {
+			LARGE_INTEGER frequency;
+			QueryPerformanceFrequency(&frequency);
+			frequency_ns = frequency.QuadPart / 1'000'000'000.0;
+		}
+
+		void begin() {
+			QueryPerformanceCounter(&t);
+		}
+
+		uint64_t end() {
+			LARGE_INTEGER t_;
+			QueryPerformanceCounter(&t_);
+			return uint64_t((t_.QuadPart - t.QuadPart) / frequency_ns);
+		}
+	};
+
+	TEST_CLASS(KeyboardTest)
 	{
 	public:
 		static inline HHOOK hook;
 		static inline std::queue<DWORD> input_keys;
 		static inline std::mutex mutex;
 
-		TEST_METHOD_INITIALIZE(TestInit)
+		TEST_CLASS_INITIALIZE(Init)
 		{
 			std::thread t([] {
 				hook = SetWindowsHookExW(WH_KEYBOARD_LL, LowLevelKeyboardProc, GetModuleHandle(0), 0);
@@ -34,9 +62,6 @@ namespace AhkDllTest
 				}
 			});
 			t.detach();
-
-			int error = IbAhkSendInit();
-			Assert::AreEqual(0, error);
 		}
 
 		static LRESULT CALLBACK LowLevelKeyboardProc(
@@ -53,27 +78,6 @@ namespace AhkDllTest
 			}
 			return CallNextHookEx(hook, nCode, wParam, lParam);
 		}
-
-		class Measure {
-			LARGE_INTEGER t;
-			double frequency_ns;
-		public:
-			Measure() {
-				LARGE_INTEGER frequency;
-				QueryPerformanceFrequency(&frequency);
-				frequency_ns = frequency.QuadPart / 1'000'000'000.0;
-			}
-
-			void begin() {
-				QueryPerformanceCounter(&t);
-			}
-
-			uint64_t end() {
-				LARGE_INTEGER t_;
-				QueryPerformanceCounter(&t_);
-				return uint64_t((t_.QuadPart - t.QuadPart) / frequency_ns);
-			}
-		};
 
 		TEST_METHOD(MeasureKeyboardLatency) {
 			Measure measure;
@@ -113,8 +117,15 @@ namespace AhkDllTest
 			Logger::WriteMessage((std::to_wstring(t1) + L"\n").c_str());
 			Logger::WriteMessage((std::to_wstring(t2) + L"\n").c_str());
 		}
-		
-		TEST_METHOD(MeasureMouseMove) {
+
+		TEST_CLASS_CLEANUP(Cleanup) {
+			UnhookWindowsHookEx(hook);
+		}
+	};
+
+	TEST_CLASS(MouseTest) {
+	public:
+		TEST_METHOD(MeasureMouseMoveDuration) {
 			INPUT input;
 			input.type = INPUT_MOUSE;
 			input.mi = {};
@@ -130,9 +141,27 @@ namespace AhkDllTest
 			}
 		}
 
-		TEST_METHOD_CLEANUP(TestDestroy) {
-			IbAhkSendDestroy();
-			UnhookWindowsHookEx(hook);
+		TEST_METHOD(MeasureMouseMovement) {
+			POINT p1, p2, d1, d2;
+			GetCursorPos(&p1);
+
+			INPUT input;
+			input.type = INPUT_MOUSE;
+			input.mi = {};
+			input.mi.dwFlags = MOUSEEVENTF_MOVE_NOCOALESCE;
+			input.mi.dx = input.mi.dy = 100;
+			IbAhkSendInput(1, &input, sizeof INPUT);
+
+			GetCursorPos(&p2);
+			d1 = { p2.x - p1.x, p2.y - p1.y };
+
+			Sleep(10);
+
+			GetCursorPos(&p2);
+			d2 = { p2.x - p1.x, p2.y - p1.y };
+
+			Logger::WriteMessage((std::to_wstring(d1.x) + L", " + std::to_wstring(d1.y) + L"\n").c_str());
+			Logger::WriteMessage((std::to_wstring(d2.x) + L", " + std::to_wstring(d2.y) + L"\n").c_str());
 		}
 	};
 }
