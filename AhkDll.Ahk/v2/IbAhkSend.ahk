@@ -22,7 +22,7 @@ IbSendInit(mode := 0){
             "DeviceOpeningFailed",
             "LogiSettingsNotFound"
         ]
-        throw error_text[result - 1]
+        throw error_text[result]
     }
 
     if (mode != 0){
