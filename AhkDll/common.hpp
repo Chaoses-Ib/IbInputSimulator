@@ -1,4 +1,7 @@
 ﻿#pragma once
+#include "IbAhkSend.hpp"
+using namespace Send;
+
 #include <detours/detours.h>
 #include <IbWinCppLib/WinCppLib.hpp>
 using ib::Byte;
