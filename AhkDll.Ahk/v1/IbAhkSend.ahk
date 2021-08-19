@@ -4,33 +4,38 @@
 ; Version: 210815
 ; Git: https://github.com/Chaoses-Ib/IbAhkSendLib
 
-IbSendInit(send_type := "AnyDriver", mode := 1){
-    static hModule := DllCall("LoadLibrary", "Str", A_ScriptDir "\IbAhkSend.dll", "Ptr")
+IbSendInit(send_type := "AnyDriver", mode := 1, args*){
+    workding_dir := A_WorkingDir
+    SetWorkingDir, %A_ScriptDir%
+
+    static hModule := DllCall("LoadLibrary", "Str", "IbAhkSend.dll", "Ptr")
     if (hModule == 0){
         if (A_PtrSize == 4)
-            throw "LibLoadingFailed: Please use AutoHotkey x64"
-        else if (!FileExist(A_ScriptDir "\IbAhkSend.dll"))
-            throw "LibLoadingFailed: Please put IbAhkSend.dll with your script file (or use AHK v2 instead, which can locate those DLLs that are put with the library files)"
+            throw "SendLibLoadFailed: Please use AutoHotkey x64"
+        else if (!FileExist("IbAhkSend.dll"))
+            throw "SendLibLoadFailed: Please put IbAhkSend.dll with your script file (or use AHK v2 instead, which can locate those DLLs that are put with the library files)"
         else
-            throw "LibLoadingFailed"
+            throw "SendLibLoadFailed"
     }
 
-    send_type_table := ["AnyDriver", "SendInput", "Logitech"]
-    send_type_v := 0
-    for i, e in send_type_table
-    {
-        if (e == send_type){
-            send_type_v := i
-            break
-        }
-    }
-    if (send_type_v == 0)
+    if (send_type == "AnyDriver")
+        result := DllCall("IbAhkSend\IbAhkSendInit", "Int", 0, "Int", 0, "Ptr", 0, "Int")
+    else if (send_type == "SendInput")
+        result := DllCall("IbAhkSend\IbAhkSendInit", "Int", 1, "Int", 0, "Ptr", 0, "Int")
+    else if (send_type == "Logitech")
+        result := DllCall("IbAhkSend\IbAhkSendInit", "Int", 2, "Int", 0, "Ptr", 0, "Int")
+    else if (send_type == "DD"){
+        if (args.MaxIndex() == 1)
+            result := DllCall("IbAhkSend\IbAhkSendInit", "Int", 3, "Int", 0, "WStr", args[1], "Int")
+        else
+            result := DllCall("IbAhkSend\IbAhkSendInit", "Int", 3, "Int", 0, "Ptr", 0, "Int")
+    } else
         throw "Invalid send type"
-    send_type_v := send_type_v - 1
-
-    result := DllCall("IbAhkSend\IbAhkSendInit", "Int", send_type_v, "Int", 0, "Ptr", 0, "Int")
+    
+    SetWorkingDir, %workding_dir%
+    
     if (result != 0){
-        error_text := ["DeviceNotFound", "DeviceOpeningFailed"]
+        error_text := ["InvalidArgument", "LibraryNotFound", "LibraryLoadFailed", "LibraryError", "DeviceCreateFailed", "DeviceNotFound", "DeviceOpenFailed"]
         throw error_text[result]
     }
 
@@ -49,7 +54,7 @@ IbSendMode(mode){
         SendMode %ahk_mode%
         DllCall("IbAhkSend\IbAhkSendInputHook", "Int", 0)
     } else {
-        throw "Invalid argument"
+        throw "Invalid send mode"
     }
 }
 

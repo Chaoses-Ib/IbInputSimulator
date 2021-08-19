@@ -3,8 +3,18 @@
 [AutoHotkey](https://www.autohotkey.com/) 驱动按键库。  
 
 ## 支持驱动
-* [罗技 G HUB](https://www.logitechg.com.cn/zh-cn/innovation/g-hub.html)（不需要罗技硬件）
-* [罗技游戏软件](https://support.logi.com/hc/zh-cn/articles/360025298053)（不需要罗技硬件）
+* [罗技 G HUB](https://www.logitechg.com.cn/zh-cn/innovation/g-hub.html)  
+  不需要罗技硬件。  
+  用例：`IbSendInit("Logitech)"`
+* [罗技游戏软件](https://support.logi.com/hc/zh-cn/articles/360025298053)  
+  不需要罗技硬件。  
+  用例：`IbSendInit("Logitech)"`
+* [DD 虚拟鼠标 & 虚拟键盘](https://github.com/ddxoft/master)  
+  可能会导致蓝屏；难以卸载干净。  
+  使用时需要把 DLL 文件（`DD94687.64.dll`/`DD64.dll`/`DDHID64.dll`）与你的脚本文件放到一起，或者在调用 IbSendInit 时指定路径参数：
+  ```ahk
+  IbSendInit("DD", 1, "C:\SomeDir\DD64.dll")`
+  ```
 
 ## 例子
 <table>

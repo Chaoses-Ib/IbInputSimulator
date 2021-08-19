@@ -11,14 +11,20 @@
 namespace Send {
     enum class Error : uint32_t {
         Success,
+        InvalidArgument,
+        LibraryNotFound,
+        LibraryLoadFailed,
+        LibraryError,
+        DeviceCreateFailed,
         DeviceNotFound,
-        DeviceOpeningFailed
+        DeviceOpenFailed
     };
 
     enum class SendType : uint32_t {
         AnyDriver,
         SendInput,
-        Logitech
+        Logitech,
+        DD
     };
 
     using InitFlags = const uint32_t;

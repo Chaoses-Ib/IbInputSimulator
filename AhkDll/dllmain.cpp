@@ -2,9 +2,7 @@
 #include "IbAhkSend.hpp"
 using namespace Send;
 
-#include "SendTypes/SendType.hpp"
-#include "SendTypes/SendInput.hpp"
-#include "SendTypes/Logitech.hpp"
+#include "SendTypes/Types.hpp"
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -87,21 +85,49 @@ DLLAPI void __stdcall IbAhkSendInputHook(HookCode code) {
 
 DLLAPI Send::Error __stdcall IbAhkSendInit(SendType type, InitFlags flags, void* argument) {
     if (type == SendType::AnyDriver) {
-        return IbAhkSendInit(SendType::Logitech, flags, argument);
+        Error error = IbAhkSendInit(SendType::Logitech, flags, nullptr);
+        if (error == Error::Success) return Error::Success;
+
+        error = IbAhkSendInit(SendType::DD, flags, nullptr);
+        if (error == Error::Success) return Error::Success;
+
+        return Error::DeviceNotFound;
     }
     else {
         switch (type) {
         case SendType::SendInput:
-            send.reset(dynamic_cast<Type::Base*>(new Type::SendInput(&SendInputHook::SendInput_real)));  //ib::auto_dynamic_cast
+            {
+                auto type = std::make_unique<Type::SendInput>();
+                type->create_base(&SendInputHook::GetAsyncKeyState_real);
+                Error error = type->create(&SendInputHook::SendInput_real);
+                if (error != Error::Success)
+                    return error;
+                send = std::move(type);
+            }
             break;
         case SendType::Logitech:
-            send.reset(dynamic_cast<Type::Base*>(new Type::Logitech()));
+            {
+                auto type = std::make_unique<Type::Logitech>();
+                type->create_base(&SendInputHook::GetAsyncKeyState_real);
+                Error error = type->create();
+                if (error != Error::Success)
+                    return error;
+                send = std::move(type);
+            }
             break;
+        case SendType::DD:
+            {
+                auto type = std::make_unique<Type::DD>();
+                type->create_base(&SendInputHook::GetAsyncKeyState_real);
+                Error error = type->create(ib::Addr(argument));
+                if (error != Error::Success)
+                    return error;
+                send = std::move(type);
+            }
+            break;
+        default:
+            return Error::InvalidArgument;
         }
-        send->base_create(&SendInputHook::GetAsyncKeyState_real);
-        if (Error error = send->create(); error != Error::Success)
-            return error;
-
         return Error::Success;
     }
 }

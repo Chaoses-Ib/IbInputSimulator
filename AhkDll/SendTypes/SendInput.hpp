@@ -1,22 +1,27 @@
 ﻿#pragma once
-#include "SendType.hpp"
+#include "Base.hpp"
 
-namespace Send::Type {
-    class SendInput final : public Base {
+namespace Send::Type::Internal {
+    class SendInput final : virtual public Base {
         decltype(&::SendInput) *SendInput_true;
     public:
-        SendInput(decltype(&::SendInput)* SendInput_true) : SendInput_true(SendInput_true) {}
-
-        uint32_t send_input(INPUT inputs[], uint32_t n) override {
-            return (*SendInput_true)(n, inputs, sizeof INPUT);
+        Error create(decltype(&::SendInput)* SendInput_true) {
+            this->SendInput_true = SendInput_true;
+            return Error::Success;
         }
 
-        uint32_t send_mouse_input(INPUT inputs[], uint32_t n) override {
-            return (*SendInput_true)(n, inputs, sizeof INPUT);
+        void destroy() override {}
+
+        uint32_t send_input(const INPUT inputs[], uint32_t n) override {
+            return (*SendInput_true)(n, (INPUT*)inputs, sizeof INPUT);
         }
 
-        uint32_t send_keyboard_input(INPUT inputs[], uint32_t n) override {
-            return (*SendInput_true)(n, inputs, sizeof INPUT);
+        uint32_t send_mouse_input(const INPUT inputs[], uint32_t n) override {
+            return (*SendInput_true)(n, (INPUT*)inputs, sizeof INPUT);
+        }
+
+        uint32_t send_keyboard_input(const INPUT inputs[], uint32_t n) override {
+            return (*SendInput_true)(n, (INPUT*)inputs, sizeof INPUT);
         }
     };
 }

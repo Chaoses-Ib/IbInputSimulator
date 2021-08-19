@@ -10,6 +10,7 @@ using namespace Send;
 #include <future>
 #include <queue>
 #include <IbWinCppLib/WinCppLib.hpp>
+#include "Vk.hpp"
 
 
 class Measure {
@@ -133,12 +134,15 @@ public:
 			input_keys.pop();
 		}
 
-		BOOST_TEST_MESSAGE(fmt::format("Duration: {}ns\n", t1));
-		//SendInput: 1~3ms
+		BOOST_TEST_MESSAGE("TestKeyboardLatency:");
+		BOOST_TEST_MESSAGE(fmt::format("    Duration: {}ns", t1));
+		//SendInput: 1000~3000us (1~3ms)
 		//Logitech: 25~45us
-		BOOST_TEST_MESSAGE(fmt::format("Latency: {}ns\n", t2));
+		//DD: 70~110us
+		BOOST_TEST_MESSAGE(fmt::format("    Latency: {}ns", t2));
 		//SendInput: 100ns (0)
 		//Logitech: 0.8~4ms
+		//DD: 0.6~1ms
 	}
 };
 
@@ -164,9 +168,12 @@ public:
 				IbAhkSendInput(1, &input, sizeof INPUT);
 		}
 		uint64_t t = measure.end();
-		BOOST_TEST_MESSAGE(fmt::format("Duration: {}ns\n", t / 10000));
+
+		BOOST_TEST_MESSAGE("TestMouseMove:");
+		BOOST_TEST_MESSAGE(fmt::format("    Duration: {}ns", t / 10000));
 		//SendInput: 200~800us
 		//Logitech: 3~10us
+		//DD: 500~1000us
 	}
 
 	void TestMouseMoveLatency() {
@@ -188,12 +195,37 @@ public:
 			d = { p2.x - p1.x, p2.y - p1.y };
 		} while (!(d.x >= 50 && d.y >= 50));
 		uint64_t latency = measure.end();
-		BOOST_TEST_MESSAGE(fmt::format("Latency: {}ns\n", latency));
-		//SendInput: 3~200us
-		//Logitech: 900~4000us (0.9~4ms)
+
+		BOOST_TEST_MESSAGE("TestMouseMoveLatency:");
+		BOOST_TEST_MESSAGE(fmt::format("    Latency: {}ns", latency));
+		//SendInput: 0.003~0.2ms (3~200us)
+		//Logitech: 0.9~4ms
+		//DD: 1.1ms~1.3ms
 	}
 
-	void TestMouseMoveDistance() {
+	void TestMouseAbsoluteMove() {
+		POINT screen{ GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN) };
+
+		INPUT input;
+		input.type = INPUT_MOUSE;
+		input.mi = {};
+		input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_MOVE_NOCOALESCE | MOUSEEVENTF_ABSOLUTE;
+		input.mi.dx = 65536 * 100 / screen.x;
+		input.mi.dy = 65536 * 100 / screen.y;
+		IbAhkSendInput(1, &input, sizeof INPUT);
+
+		POINT p1, p2;
+		GetCursorPos(&p1);
+		Sleep(10);
+		GetCursorPos(&p2);
+		BOOST_CHECK((abs(p2.x - 100) <= 10 && abs(p2.y - 100) <= 100));
+
+		BOOST_TEST_MESSAGE("TestMouseAbsoluteMove:");
+		BOOST_TEST_MESSAGE(fmt::format("    0ms: ({}, {})", p1.x, p1.y));
+		BOOST_TEST_MESSAGE(fmt::format("    10ms: ({}, {})", p2.x, p2.y));
+	}
+
+	void TestMouseRelativeMove() {
 		POINT p1, p2, d1, d2;
 		GetCursorPos(&p1);
 
@@ -213,31 +245,41 @@ public:
 		d2 = { p2.x - p1.x, p2.y - p1.y };
 		BOOST_CHECK((abs(d2.x - 100) <= 10 && abs(d2.y - 100) <= 100));
 
-		BOOST_TEST_MESSAGE(fmt::format("0ms: ({}, {})\n", d1.x, d1.y));
-		BOOST_TEST_MESSAGE(fmt::format("10ms: ({}, {})\n", d2.x, d2.y));
+		BOOST_TEST_MESSAGE("TestMouseRelativeMove:");
+		BOOST_TEST_MESSAGE(fmt::format("    0ms: ({}, {})", d1.x, d1.y));
+		BOOST_TEST_MESSAGE(fmt::format("    10ms: ({}, {})", d2.x, d2.y));
 	}
 };
 
-#define CODE_GENERATE_TEST_NAME(name, type)  \
-BOOST_AUTO_TEST_SUITE(name)  \
-    BOOST_FIXTURE_TEST_SUITE(Keyboard, KeyboardTest<SendType::type>)  \
+#define CODE_GENERATE_KEYBOARDTEST  \
 		using base = BOOST_AUTO_TEST_CASE_FIXTURE;  \
 		BOOST_AUTO_TEST_CASE(TestKeyboardLatency) {  \
 		    base::TestKeyboardLatency();  \
-		}  \
-    BOOST_AUTO_TEST_SUITE_END()  \
-      \
-	BOOST_FIXTURE_TEST_SUITE(Mouse, MouseTest<SendType::type>)  \
-		using base = BOOST_AUTO_TEST_CASE_FIXTURE;  \
+		}
+
+#define CODE_GENERATE_MOUSETEST  \
+	    using base = BOOST_AUTO_TEST_CASE_FIXTURE;  \
 		BOOST_AUTO_TEST_CASE(TestMouseMove) {  \
 		    base::TestMouseMove();  \
 		}  \
 		BOOST_AUTO_TEST_CASE(TestMouseMoveLatency) {  \
 		    base::TestMouseMoveLatency();  \
 		}  \
-		BOOST_AUTO_TEST_CASE(TestMouseMoveDistance) {  \
-		    base::TestMouseMoveDistance();  \
+		BOOST_AUTO_TEST_CASE(TestMouseAbsoluteMove) {  \
+		    base::TestMouseAbsoluteMove();  \
 		}  \
+		BOOST_AUTO_TEST_CASE(TestMouseRelativeMove) {  \
+		    base::TestMouseRelativeMove();  \
+		}
+
+#define CODE_GENERATE_TEST_NAME(name, type)  \
+BOOST_AUTO_TEST_SUITE(name)  \
+    BOOST_FIXTURE_TEST_SUITE(Keyboard, KeyboardTest<SendType::type>)  \
+        CODE_GENERATE_KEYBOARDTEST  \
+    BOOST_AUTO_TEST_SUITE_END()  \
+      \
+	BOOST_FIXTURE_TEST_SUITE(Mouse, MouseTest<SendType::type>)  \
+		CODE_GENERATE_MOUSETEST  \
 	BOOST_AUTO_TEST_SUITE_END()  \
 BOOST_AUTO_TEST_SUITE_END()
 #define CODE_GENERATE_TEST(type) CODE_GENERATE_TEST_NAME(type, type)
@@ -245,3 +287,27 @@ BOOST_AUTO_TEST_SUITE_END()
 CODE_GENERATE_TEST_NAME(SendInput_, SendInput)
 CODE_GENERATE_TEST(AnyDriver)
 CODE_GENERATE_TEST(Logitech)
+
+BOOST_AUTO_TEST_SUITE(DD)
+    BOOST_FIXTURE_TEST_SUITE(Keyboard, KeyboardTest<SendType::DD>)
+        BOOST_AUTO_TEST_CASE(TestDDCode) {
+	        HMODULE dd = GetModuleHandleW(L"DD94687.64.dll");
+	        if(!dd) dd = GetModuleHandleW(L"DD64.dll");
+			if (!dd) dd = GetModuleHandleW(L"DDHID64.dll");
+			BOOST_CHECK(dd);
+			int (*DD_todc)(int vk) = ib::Addr(GetProcAddress(dd, "DD_todc"));
+			BOOST_CHECK(DD_todc);
+
+			std::stringstream ss;
+			for (WORD vk = 0; vk < 0x100; vk++)
+				ss << vk << " " << vk_to_str(vk) << ": " << DD_todc(vk) << "\n";
+			BOOST_TEST_MESSAGE(ss.str());
+        }
+
+        CODE_GENERATE_KEYBOARDTEST
+    BOOST_AUTO_TEST_SUITE_END()
+    
+	BOOST_FIXTURE_TEST_SUITE(Mouse, MouseTest<SendType::DD>)
+		CODE_GENERATE_MOUSETEST
+	BOOST_AUTO_TEST_SUITE_END()
+BOOST_AUTO_TEST_SUITE_END()

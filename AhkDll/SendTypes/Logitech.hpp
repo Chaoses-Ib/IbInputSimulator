@@ -1,12 +1,11 @@
 ﻿#pragma once
 #include <string>
-#include <mutex>
 #include <Windows.h>
 #include <winternl.h>
 #include <rapidjson/document.h>
 #include <rapidjson/filereadstream.h>
 #include "../common.hpp"
-#include "SendType.hpp"
+#include "Base.hpp"
 
 #pragma comment(lib, "ntdll.lib")
 
@@ -38,7 +37,7 @@ extern "C" {
     );
 }
 
-namespace Send::Type {
+namespace Send::Type::Internal {
     class LogitechDriver {
         HANDLE device;
         bool has_acceleration;
@@ -55,7 +54,7 @@ namespace Send::Type {
                 OPEN_EXISTING, 0, NULL
             );
             if (device == INVALID_HANDLE_VALUE)
-                return Error::DeviceOpeningFailed;
+                return Error::DeviceOpenFailed;
 
             int acceleration = get_has_acceleration();
             /* #TODO: G HUB
@@ -271,21 +270,10 @@ namespace Send::Type {
             return DeviceIoControl(device, IOCTL_BUSENUM_PLAY_MOUSEMOVE, &report, sizeof MouseReport, nullptr, 0, &bytes_returned, nullptr);
         }
 
-        struct KeyboardModifier {
-            bool LCtrl : 1;
-            bool LShift : 1;
-            bool LAlt : 1;
-            bool LGui : 1;
-            bool RCtrl : 1;
-            bool RShift : 1;
-            bool RAlt : 1;
-            bool RGui : 1;
-        };
-
         struct KeyboardReport {
             union {
-                KeyboardModifier modifier;
-                Byte modifier_byte;
+                KeyboardModifiers modifiers;
+                Byte modifiers_byte;
             };
             Byte reserved;
             Byte keys[6];
@@ -300,7 +288,7 @@ namespace Send::Type {
             if constexpr (debug) {
                 bool success = DeviceIoControl(device, 0x2A200C, &report, sizeof KeyboardReport, nullptr, 0, &bytes_returned, nullptr);
                 DWORD error = GetLastError();
-                DebugOStream() << L"report_keyboard: " << report.modifier_byte << L", " << report.keys[0] << L", " << report.keys[1] << L". "
+                DebugOStream() << L"report_keyboard: " << report.modifiers_byte << L", " << report.keys[0] << L", " << report.keys[1] << L". "
                     << success << L", " << error << std::endl;
                 return success;
             }
@@ -516,11 +504,12 @@ namespace Send::Type {
         }
     };
 
-    class Logitech final : public Base {
+    class Logitech final : virtual public Base, public VirtualKeyStates {
         LogitechDriver driver;
-
     public:
-        Error create() override {
+        Logitech() : VirtualKeyStates(keyboard_report.modifiers, keyboard_mutex) {}
+
+        Error create() {
             return driver.create();
         }
 
@@ -534,12 +523,12 @@ namespace Send::Type {
         std::mutex mouse_mutex;
 
     public:
-        uint32_t send_mouse_input(INPUT inputs[], uint32_t n) override {
+        uint32_t send_mouse_input(const INPUT inputs[], uint32_t n) override {
             uint32_t count = 0;
             std::lock_guard lock(mouse_mutex);
 
             for (uint32_t i = 0; i < n; i++) {
-                MOUSEINPUT& mi = inputs[i].mi;
+                const MOUSEINPUT& mi = inputs[i].mi;
                 if constexpr (debug)
                     DebugOStream() << L"send_mouse_input: " << mi.dwFlags << L", " << mi.dx << L", " << mi.dy << std::endl;
 
@@ -547,36 +536,24 @@ namespace Send::Type {
 
                 //#TODO: MOUSEEVENTF_MOVE_NOCOALESCE, MOUSEEVENTF_VIRTUALDESK
                 if (mi.dwFlags & MOUSEEVENTF_MOVE) {
+                    POINT move { mi.dx, mi.dy };
                     if (mi.dwFlags & MOUSEEVENTF_ABSOLUTE) {
-                        static POINT screen;  //#TODO: may change
-                        if (!screen.x) {
-                            screen.x = GetSystemMetrics(SM_CXSCREEN);
-                            screen.y = GetSystemMetrics(SM_CYSCREEN);
-                        }
-                        // mi.dx = round(x / screen.x * 65536)
-                        mi.dx = mi.dx * screen.x / 65536;
-                        mi.dy = mi.dy * screen.y / 65536;
-
-                        POINT point;
-                        GetCursorPos(&point);
-                        if constexpr (debug)
-                            DebugOStream() << L"MOUSEEVENTF_ABSOLUTE: (" << point.x << L", " << point.y << L") -> (" << mi.dx << L", " << mi.dy << L")" << std::endl;
-                        mi.dx -= point.x;
-                        mi.dy -= point.y;
+                        mouse_absolute_to_screen(move);
+                        mouse_screen_to_relative(move);
                     }
 
-                    while (abs(mi.dx) > 127 || abs(mi.dy) > 127) {
-                        if (abs(mi.dx) > 127) {
-                            mouse_report.x = mi.dx > 0 ? 127 : -127;
-                            mi.dx -= mouse_report.x;
+                    while (abs(move.x) > 127 || abs(move.y) > 127) {
+                        if (abs(move.x) > 127) {
+                            mouse_report.x = move.x > 0 ? 127 : -127;
+                            move.x -= mouse_report.x;
                         }
                         else {
                             mouse_report.x = 0;
                         }
 
-                        if (abs(mi.dy) > 127) {
-                            mouse_report.y = mi.dy > 0 ? 127 : -127;
-                            mi.dy -= mouse_report.y;
+                        if (abs(move.y) > 127) {
+                            mouse_report.y = move.y > 0 ? 127 : -127;
+                            move.y -= mouse_report.y;
                         }
                         else {
                             mouse_report.y = 0;
@@ -585,8 +562,8 @@ namespace Send::Type {
                         driver.report_mouse(mouse_report, compensate_switch = -compensate_switch);
                     }
 
-                    mouse_report.x = (uint8_t)mi.dx;
-                    mouse_report.y = (uint8_t)mi.dy;
+                    mouse_report.x = (uint8_t)move.x;
+                    mouse_report.y = (uint8_t)move.y;
                 } else {
                     mouse_report.x = 0;
                     mouse_report.y = 0;
@@ -600,7 +577,7 @@ namespace Send::Type {
                 CODE_GENERATE(MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP, RButton)
                 CODE_GENERATE(MOUSEEVENTF_MIDDLEDOWN, MOUSEEVENTF_MIDDLEUP, MButton)
 #undef CODE_GENERATE
-                if (mi.dwFlags & MOUSEEVENTF_XDOWN || mi.dwFlags & MOUSEEVENTF_XUP) {
+                if (mi.dwFlags & (MOUSEEVENTF_XDOWN | MOUSEEVENTF_XUP)) {
                     bool down = mi.dwFlags & MOUSEEVENTF_XDOWN;
                     switch (mi.mouseData) {
                     case XBUTTON1: mouse_report.button.XButton1 = down; break;
@@ -617,69 +594,19 @@ namespace Send::Type {
     private:
         LogitechDriver::KeyboardReport keyboard_report{};
         std::mutex keyboard_mutex;
-
     public:
-        SHORT get_key_state(int vKey) override {
-            switch (vKey) {
-#define CODE_GENERATE(vk, member)  case vk: return keyboard_report.modifier.##member << 15;
-
-                CODE_GENERATE(VK_LCONTROL, LCtrl)
-                CODE_GENERATE(VK_RCONTROL, RCtrl)
-                CODE_GENERATE(VK_LSHIFT, LShift)
-                CODE_GENERATE(VK_RSHIFT, RShift)
-                CODE_GENERATE(VK_LMENU, LAlt)
-                CODE_GENERATE(VK_RMENU, RAlt)
-                CODE_GENERATE(VK_LWIN, LGui)
-                CODE_GENERATE(VK_RWIN, RGui)
-#undef CODE_GENERATE
-            default:
-                return (*get_key_state_fallback)(vKey);
-            }
-        }
-
-        void sync_key_states() override {
-            std::lock_guard lock(keyboard_mutex);
-
-            //#TODO: GetKeyboardState() ?
-            //static bool states[256];  //down := true
-#define CODE_GENERATE(vk, member)  keyboard_report.modifier.##member = GetAsyncKeyState(vk) & 0x8000;
-
-            CODE_GENERATE(VK_LCONTROL, LCtrl)
-            CODE_GENERATE(VK_RCONTROL, RCtrl)
-            CODE_GENERATE(VK_LSHIFT, LShift)
-            CODE_GENERATE(VK_RSHIFT, RShift)
-            CODE_GENERATE(VK_LMENU, LAlt)
-            CODE_GENERATE(VK_RMENU, RAlt)
-            CODE_GENERATE(VK_LWIN, LGui)
-            CODE_GENERATE(VK_RWIN, RGui)
-#undef CODE_GENERATE
-        }
-
-        uint32_t send_keyboard_input(INPUT inputs[], uint32_t n) override {
+        uint32_t send_keyboard_input(const INPUT inputs[], uint32_t n) override {
             uint32_t count = 0;
             std::lock_guard lock(keyboard_mutex);
 
             for (uint32_t i = 0; i < n; i++) {
-                bool keydown = !(inputs[i].ki.dwFlags & KEYEVENTF_KEYUP);
-                switch (inputs[i].ki.wVk) {
+                const KEYBDINPUT& ki = inputs[i].ki;
 
-#define CODE_GENERATE(vk, member)  \
-                case vk:  \
-                    keyboard_report.modifier.##member = keydown;  \
-                    break;
-
-                CODE_GENERATE(VK_LCONTROL, LCtrl)
-                CODE_GENERATE(VK_RCONTROL, RCtrl)
-                CODE_GENERATE(VK_LSHIFT, LShift)
-                CODE_GENERATE(VK_RSHIFT, RShift)
-                CODE_GENERATE(VK_LMENU, LAlt)
-                CODE_GENERATE(VK_RMENU, RAlt)
-                CODE_GENERATE(VK_LWIN, LGui)
-                CODE_GENERATE(VK_RWIN, RGui)
-#undef CODE_GENERATE
-
-                default:
-                    uint8_t usage = driver.keyboard_vk_to_usage((uint8_t)inputs[i].ki.wVk);;
+                bool keydown = !(ki.dwFlags & KEYEVENTF_KEYUP);
+                if (is_modifier(ki.wVk)) {
+                    set_modifier_state(ki.wVk, keydown);
+                } else {
+                    uint8_t usage = driver.keyboard_vk_to_usage((uint8_t)ki.wVk);;
                     if (keydown) {
                         for (int i = 0; i < 6; i++) {
                             if (keyboard_report.keys[i] == 0) {
@@ -704,5 +631,6 @@ namespace Send::Type {
             }
             return count;
         }
+#pragma warning(suppress : 4250)  //'class1' : inherits 'class2::member' via dominance
     };
 }

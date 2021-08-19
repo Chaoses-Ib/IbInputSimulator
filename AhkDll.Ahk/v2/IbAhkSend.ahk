@@ -6,33 +6,43 @@
 
 #DllLoad "*i IbAhkSend.dll"  ;DllCall("LoadLibrary") cannot locate DLL correctly
 
-IbSendInit(send_type := "AnyDriver", mode := 1){
+IbSendInit(send_type := "AnyDriver", mode := 1, args*){
+    workding_dir := A_WorkingDir
+    SetWorkingDir(A_ScriptDir)
+
     static hModule := DllCall("GetModuleHandle", "Str", "IbAhkSend.dll", "Ptr")
     if (hModule == 0){
         if (A_PtrSize == 4)
-            throw "LibLoadingFailed: Please use AutoHotkey x64"
+            throw "SendLibLoadFailed: Please use AutoHotkey x64"
         else
-            throw "LibLoadingFailed"
+            throw "SendLibLoadFailed"
     }
     
-    send_type_table := ["AnyDriver", "SendInput", "Logitech"]
-    send_type_v := 0
-    for i, e in send_type_table
-    {
-        if (e == send_type){
-            send_type_v := i
-            break
-        }
-    }
-    if (send_type_v == 0)
+    if (send_type == "AnyDriver")
+        result := DllCall("IbAhkSend\IbAhkSendInit", "Int", 0, "Int", 0, "Ptr", 0, "Int")
+    else if (send_type == "SendInput")
+        result := DllCall("IbAhkSend\IbAhkSendInit", "Int", 1, "Int", 0, "Ptr", 0, "Int")
+    else if (send_type == "Logitech")
+        result := DllCall("IbAhkSend\IbAhkSendInit", "Int", 2, "Int", 0, "Ptr", 0, "Int")
+    else if (send_type == "DD"){
+        if (args.Length == 1)
+            result := DllCall("IbAhkSend\IbAhkSendInit", "Int", 3, "Int", 0, "WStr", args[1], "Int")
+        else
+            result := DllCall("IbAhkSend\IbAhkSendInit", "Int", 3, "Int", 0, "Ptr", 0, "Int")
+    } else
         throw "Invalid send type"
-    send_type_v := send_type_v - 1
 
-    result := DllCall("IbAhkSend\IbAhkSendInit", "Int", send_type_v, "Int", 0, "Ptr", 0, "Int")
+    SetWorkingDir(workding_dir)
+
     if (result !== 0){
         error_text := [
+            "InvalidArgument",
+            "LibraryNotFound",
+            "LibraryLoadFailed",
+            "LibraryError",
+            "DeviceCreateFailed",
             "DeviceNotFound",
-            "DeviceOpeningFailed"
+            "DeviceOpenFailed"
         ]
         throw error_text[result]
     }
@@ -52,7 +62,7 @@ IbSendMode(mode){
         SendMode(ahk_mode)
         DllCall("IbAhkSend\IbAhkSendInputHook", "Int", 0)
     } else {
-        throw "Invalid argument"
+        throw "Invalid send mode"
     }
 }
 

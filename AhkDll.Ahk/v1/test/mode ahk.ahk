@@ -7,4 +7,5 @@ Send notepad`n
 WinWaitActive, ahk_exe notepad.exe
 Send Hello world+1
 Sleep 100
-MouseClickDrag, Left, 0, 0, 150, 50
+CoordMode, Mouse, Client
+MouseClickDrag, Left, 5, 5, 150, 50

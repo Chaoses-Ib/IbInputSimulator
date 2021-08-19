@@ -33,10 +33,16 @@
     <ClInclude Include="SendTypes\Logitech.hpp">
       <Filter>Header Files\SendTypes</Filter>
     </ClInclude>
-    <ClInclude Include="SendTypes\SendType.hpp">
+    <ClInclude Include="SendTypes\Base.hpp">
       <Filter>Header Files\SendTypes</Filter>
     </ClInclude>
     <ClInclude Include="SendTypes\SendInput.hpp">
+      <Filter>Header Files\SendTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="SendTypes\DD.hpp">
+      <Filter>Header Files\SendTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="SendTypes\Types.hpp">
       <Filter>Header Files\SendTypes</Filter>
     </ClInclude>
   </ItemGroup>

@@ -169,9 +169,11 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="IbAhkSend.hpp" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SendTypes\DD.hpp" />
     <ClInclude Include="SendTypes\Logitech.hpp" />
     <ClInclude Include="SendTypes\SendInput.hpp" />
-    <ClInclude Include="SendTypes\SendType.hpp" />
+    <ClInclude Include="SendTypes\Base.hpp" />
+    <ClInclude Include="SendTypes\Types.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
