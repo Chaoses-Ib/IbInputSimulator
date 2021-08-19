@@ -1,7 +1,7 @@
 ; IbAhkSendLib
 ; Description: Enable AHK to send keystrokes by drivers.
 ; Author: Chaoses Ib
-; Version: 210815
+; Version: 0.2
 ; Git: https://github.com/Chaoses-Ib/IbAhkSendLib
 
 #DllLoad "*i IbAhkSend.dll"  ;DllCall("LoadLibrary") cannot locate DLL correctly
