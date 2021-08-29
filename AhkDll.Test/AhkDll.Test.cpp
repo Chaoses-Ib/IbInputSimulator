@@ -38,12 +38,12 @@ template <SendType TypeV>
 class InitTest {
 public:
 	InitTest() {
-		Send::Error error = IbAhkSendInit(TypeV, 0, nullptr);
+		Send::Error error = IbSendInit(TypeV, 0, nullptr);
 		BOOST_REQUIRE(error == Send::Error::Success);
 	}
 
 	~InitTest() {
-		IbAhkSendDestroy();
+		IbSendDestroy();
 	}
 };
 
@@ -115,7 +115,7 @@ public:
 
 		capture = true;
 		measure.begin();
-		IbAhkSendInput(2, input, sizeof INPUT);
+		IbSendInput(2, input, sizeof INPUT);
 		uint64_t t1 = measure.end();
 		
 		measure.begin();
@@ -161,11 +161,11 @@ public:
 		for (size_t i = 0; i < 10000 / 200; i++) {
 			input.mi.dx = input.mi.dy = 1;
 			for (size_t i = 0; i < 100; i++)
-				IbAhkSendInput(1, &input, sizeof INPUT);
+				IbSendInput(1, &input, sizeof INPUT);
 
 			input.mi.dx = input.mi.dy = -1;
 			for (size_t i = 0; i < 100; i++)
-				IbAhkSendInput(1, &input, sizeof INPUT);
+				IbSendInput(1, &input, sizeof INPUT);
 		}
 		uint64_t t = measure.end();
 
@@ -187,7 +187,7 @@ public:
 		input.mi = {};
 		input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_MOVE_NOCOALESCE;
 		input.mi.dx = input.mi.dy = 100;
-		IbAhkSendInput(1, &input, sizeof INPUT);
+		IbSendInput(1, &input, sizeof INPUT);
 
 		measure.begin();
 		do {
@@ -212,7 +212,7 @@ public:
 		input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_MOVE_NOCOALESCE | MOUSEEVENTF_ABSOLUTE;
 		input.mi.dx = 65536 * 100 / screen.x;
 		input.mi.dy = 65536 * 100 / screen.y;
-		IbAhkSendInput(1, &input, sizeof INPUT);
+		IbSendInput(1, &input, sizeof INPUT);
 
 		POINT p1, p2;
 		GetCursorPos(&p1);
@@ -234,7 +234,7 @@ public:
 		input.mi = {};
 		input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_MOVE_NOCOALESCE;
 		input.mi.dx = input.mi.dy = 100;
-		IbAhkSendInput(1, &input, sizeof INPUT);
+		IbSendInput(1, &input, sizeof INPUT);
 
 		GetCursorPos(&p2);
 		d1 = { p2.x - p1.x, p2.y - p1.y };

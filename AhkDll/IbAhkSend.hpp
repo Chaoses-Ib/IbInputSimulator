@@ -40,8 +40,8 @@ namespace Send {
     };
 }
 
-DLLAPI Send::Error __stdcall IbAhkSendInit(Send::SendType type, Send::InitFlags flags, void* argument);
-DLLAPI void __stdcall IbAhkSendDestroy();
-DLLAPI void __stdcall IbAhkSendSyncKeyStates();
-DLLAPI UINT WINAPI IbAhkSendInput(UINT cInputs, LPINPUT pInputs, int cbSize);
-DLLAPI void __stdcall IbAhkSendInputHook(Send::HookCode code);
+DLLAPI Send::Error __stdcall IbSendInit(Send::SendType type, Send::InitFlags flags, void* argument);
+DLLAPI void __stdcall IbSendDestroy();
+DLLAPI void __stdcall IbSendSyncKeyStates();
+DLLAPI UINT WINAPI IbSendInput(UINT cInputs, LPINPUT pInputs, int cbSize);
+DLLAPI void __stdcall IbSendInputHook(Send::HookCode code);
