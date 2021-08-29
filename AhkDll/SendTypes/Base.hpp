@@ -64,8 +64,23 @@ namespace Send::Type::Internal {
             return count;
         }
 
-        virtual uint32_t send_mouse_input(const INPUT inputs[], uint32_t n) = 0;
-        virtual uint32_t send_keyboard_input(const INPUT inputs[], uint32_t n) = 0;
+        virtual uint32_t send_mouse_input(const INPUT inputs[], uint32_t n) {
+            uint32_t count = 0;
+            for (uint32_t i = 0; i < n; i++)
+                count += send_mouse_input(inputs[i].mi);
+            return count;
+        }
+
+        virtual bool send_mouse_input(const MOUSEINPUT& mi) = 0;
+
+        virtual uint32_t send_keyboard_input(const INPUT inputs[], uint32_t n) {
+            uint32_t count = 0;
+            for (uint32_t i = 0; i < n; i++)
+                count += send_keyboard_input(inputs[i].ki);
+            return count;
+        }
+        
+        virtual bool send_keyboard_input(const KEYBDINPUT& ki) = 0;
         
         virtual SHORT get_key_state(int vKey) {
             return (*get_key_state_fallback)(vKey);
