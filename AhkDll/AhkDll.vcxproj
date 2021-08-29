@@ -176,6 +176,8 @@
     <ClInclude Include="SendTypes\Types.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="API 2.cpp" />
+    <ClCompile Include="API 3.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

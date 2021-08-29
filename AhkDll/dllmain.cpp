@@ -152,37 +152,3 @@ DLLAPI UINT WINAPI IbSendInput(
 ) {
     return send->send_input(pInputs, cInputs);
 }
-
-DLLAPI VOID WINAPI IbSend_mouse_event(
-    _In_ DWORD dwFlags,
-    _In_ DWORD dx,
-    _In_ DWORD dy,
-    _In_ DWORD dwData,
-    _In_ ULONG_PTR dwExtraInfo
-) {
-    INPUT input;
-    input.type = INPUT_MOUSE;
-    input.mi.dx = dx;
-    input.mi.dy = dy;
-    input.mi.mouseData = dwData;
-    input.mi.dwFlags = dwFlags;
-    input.mi.time = 0;
-    input.mi.dwExtraInfo = dwExtraInfo;
-    IbSendInput(1, &input, sizeof INPUT);
-}
-
-DLLAPI VOID WINAPI IbSend_keybd_event(
-    _In_ BYTE bVk,
-    _In_ BYTE bScan,
-    _In_ DWORD dwFlags,
-    _In_ ULONG_PTR dwExtraInfo
-) {
-    INPUT input;
-    input.type = INPUT_KEYBOARD;
-    input.ki.wVk = bVk;
-    input.ki.wScan = bScan;
-    input.ki.dwFlags = dwFlags;
-    input.ki.time = 0;
-    input.ki.dwExtraInfo = dwExtraInfo;
-    IbSendInput(1, &input, sizeof INPUT);
-}

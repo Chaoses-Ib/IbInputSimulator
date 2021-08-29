@@ -76,3 +76,56 @@ DLLAPI VOID WINAPI IbSend_keybd_event(
 );
 
 #pragma endregion
+
+
+#pragma region API 3
+
+namespace Send {
+    enum class MoveMode : uint32_t {
+        Absolute,  //1
+        Relative   //2
+    };
+
+    enum class MouseButton : uint32_t {
+        LeftDown = MOUSEEVENTF_LEFTDOWN,              //0x02
+        LeftUp = MOUSEEVENTF_LEFTUP,                  //0x04
+        Left = LeftDown | LeftUp,                     //0x06
+
+        RightDown = MOUSEEVENTF_RIGHTDOWN,            //0x08
+        RightUp = MOUSEEVENTF_RIGHTUP,                //0x10
+        Right = RightDown | RightUp,                  //0x18
+
+        MiddleDown = MOUSEEVENTF_MIDDLEDOWN,          //0x20
+        MiddleUp = MOUSEEVENTF_MIDDLEUP,              //0x40
+        Middle = MiddleDown | MiddleUp,               //0x60
+
+        XButton1Down = MOUSEEVENTF_XDOWN | XBUTTON1,  //0x81
+        XButton1Up = MOUSEEVENTF_XUP | XBUTTON1,      //0x101
+        XButton1 = XButton1Down | XButton1Up,         //0x181
+
+        XButton2Down = MOUSEEVENTF_XDOWN | XBUTTON2,  //0x82
+        XButton2Up = MOUSEEVENTF_XUP | XBUTTON2,      //0x102
+        XButton2 = XButton2Down | XButton2Up,         //0x182
+    };
+
+    struct KeyboardModifiers {
+        bool LCtrl : 1;   //0x01
+        bool LShift : 1;  //0x02
+        bool LAlt : 1;    //0x04
+        bool LWin : 1;    //0x08
+        bool RCtrl : 1;   //0x10
+        bool RShift : 1;  //0x20  
+        bool RAlt : 1;    //0x40
+        bool RWin : 1;    //0x80
+    };
+}
+
+DLLAPI bool __stdcall IbSendMouseMove(uint32_t x, uint32_t y, Send::MoveMode mode);
+DLLAPI bool __stdcall IbSendMouseClick(Send::MouseButton button);
+DLLAPI bool __stdcall IbSendMouseWheel(int32_t movement);
+
+DLLAPI bool __stdcall IbSendKeybdDown(uint16_t vk);
+DLLAPI bool __stdcall IbSendKeybdUp(uint16_t vk);
+DLLAPI bool __stdcall IbSendKeybdDownUp(uint16_t vk, Send::KeyboardModifiers modifiers);
+
+#pragma endregion

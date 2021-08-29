@@ -102,20 +102,19 @@ public:
 	void TestKeyboardLatency() {
 		Measure measure;
 
-		INPUT input[2];
+		INPUT inputs[2];
 
-		input[0].type = INPUT_KEYBOARD;
-		input[0].ki = {};
-		input[0].ki.wVk = VK_F12;
+		inputs[0].type = INPUT_KEYBOARD;
+		inputs[0].ki = {};
+		inputs[0].ki.wVk = VK_F12;
 
-		input[1].type = INPUT_KEYBOARD;
-		input[1].ki = {};
-		input[1].ki.wVk = VK_F12;
-		input[1].ki.dwFlags = KEYEVENTF_KEYUP;
+		inputs[1] = inputs[0];
+		inputs[1].ki.dwFlags = KEYEVENTF_KEYUP;
 
 		capture = true;
 		measure.begin();
-		IbSendInput(2, input, sizeof INPUT);
+		IbSendInput(2, inputs, sizeof INPUT);
+
 		uint64_t t1 = measure.end();
 		
 		measure.begin();
