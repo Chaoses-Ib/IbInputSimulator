@@ -171,11 +171,15 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="SendTypes\DD.hpp" />
     <ClInclude Include="SendTypes\Logitech.hpp" />
+    <ClInclude Include="SendTypes\Razer.hpp" />
     <ClInclude Include="SendTypes\SendInput.hpp" />
     <ClInclude Include="SendTypes\Base.hpp" />
     <ClInclude Include="SendTypes\Types.hpp" />
+    <ClInclude Include="SendTypes\Usb.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="API 2.cpp" />
+    <ClCompile Include="API 3.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

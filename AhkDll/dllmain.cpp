@@ -18,7 +18,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     case DLL_THREAD_DETACH:
         break;
     case DLL_PROCESS_DETACH:
-        IbAhkSendDestroy();
+        IbSendDestroy();
         break;
     }
     return TRUE;
@@ -63,7 +63,7 @@ public:
 };
 ib::HolderB<SendInputHook> sendinput_hook;
 
-DLLAPI void __stdcall IbAhkSendInputHook(HookCode code) {
+DLLAPI void __stdcall IbSendInputHook(HookCode code) {
     switch (code) {
     case HookCode::InitOnly:
         sendinput_hook.create();
@@ -83,12 +83,15 @@ DLLAPI void __stdcall IbAhkSendInputHook(HookCode code) {
 }
 
 
-DLLAPI Send::Error __stdcall IbAhkSendInit(SendType type, InitFlags flags, void* argument) {
+DLLAPI Send::Error __stdcall IbSendInit(SendType type, InitFlags flags, void* argument) {
     if (type == SendType::AnyDriver) {
-        Error error = IbAhkSendInit(SendType::Logitech, flags, nullptr);
+        Error error = IbSendInit(SendType::Logitech, flags, nullptr);
         if (error == Error::Success) return Error::Success;
 
-        error = IbAhkSendInit(SendType::DD, flags, nullptr);
+        error = IbSendInit(SendType::Razer, flags, nullptr);
+        if (error == Error::Success) return Error::Success;
+
+        error = IbSendInit(SendType::DD, flags, nullptr);
         if (error == Error::Success) return Error::Success;
 
         return Error::DeviceNotFound;
@@ -115,6 +118,16 @@ DLLAPI Send::Error __stdcall IbAhkSendInit(SendType type, InitFlags flags, void*
                 send = std::move(type);
             }
             break;
+        case SendType::Razer:
+            {
+                auto type = std::make_unique<Type::Razer>();
+                type->create_base(&SendInputHook::GetAsyncKeyState_real);
+                Error error = type->create();
+                if (error != Error::Success)
+                    return error;
+                send = std::move(type);
+            }
+            break;
         case SendType::DD:
             {
                 auto type = std::make_unique<Type::DD>();
@@ -132,8 +145,8 @@ DLLAPI Send::Error __stdcall IbAhkSendInit(SendType type, InitFlags flags, void*
     }
 }
 
-DLLAPI void __stdcall IbAhkSendDestroy() {
-    IbAhkSendInputHook(HookCode::Destroy);
+DLLAPI void __stdcall IbSendDestroy() {
+    IbSendInputHook(HookCode::Destroy);
 
     if (!send)
         return;
@@ -141,10 +154,14 @@ DLLAPI void __stdcall IbAhkSendDestroy() {
     send.release();
 }
 
-DLLAPI void __stdcall IbAhkSendSyncKeyStates() {
+DLLAPI void __stdcall IbSendSyncKeyStates() {
     send->sync_key_states();
 }
 
-DLLAPI UINT WINAPI IbAhkSendInput(UINT cInputs, LPINPUT pInputs, int cbSize) {
+DLLAPI UINT WINAPI IbSendInput(
+    _In_ UINT cInputs,
+    _In_reads_(cInputs) LPINPUT pInputs,
+    _In_ int cbSize
+) {
     return send->send_input(pInputs, cInputs);
 }
