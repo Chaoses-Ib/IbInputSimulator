@@ -171,9 +171,11 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="SendTypes\DD.hpp" />
     <ClInclude Include="SendTypes\Logitech.hpp" />
+    <ClInclude Include="SendTypes\Razer.hpp" />
     <ClInclude Include="SendTypes\SendInput.hpp" />
     <ClInclude Include="SendTypes\Base.hpp" />
     <ClInclude Include="SendTypes\Types.hpp" />
+    <ClInclude Include="SendTypes\Usb.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="API 2.cpp" />

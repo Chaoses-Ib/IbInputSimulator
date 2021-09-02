@@ -9,6 +9,9 @@ An [AutoHotkey](https://www.autohotkey.com/) library that enables AHK to send ke
 * [Logitech Gaming Software](https://support.logi.com/hc/en-gb/articles/360025298053-Logitech-Gaming-Software)  
   No Logitech hardware required.  
   e.g. `IbSendInit("Logitech")`
+* [Razer Synapse 3](https://www.razer.com/synapse-3)  
+  No Razer hardware required, but it will be safer if you have one.  
+  e.g. `IbSendInit("Razer")`
 * [DD Virtual Mouse & Virtual Keyboard](https://github.com/ddxoft/master)  
   May cause a blue screen; difficult to uninstall cleanly.  
   To use it, put the DLL (`DD94687.64.dll`/`DD64.dll`/`DDHID64.dll`) with your script file, or specify the path argument when call IbSendInit, e.g.:

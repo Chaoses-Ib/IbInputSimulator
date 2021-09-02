@@ -24,11 +24,13 @@ IbSendInit(send_type := "AnyDriver", mode := 1, args*){
         result := DllCall("IbAhkSend\IbSendInit", "Int", 1, "Int", 0, "Ptr", 0, "Int")
     else if (send_type == "Logitech")
         result := DllCall("IbAhkSend\IbSendInit", "Int", 2, "Int", 0, "Ptr", 0, "Int")
+    else if (send_type == "Razer")
+        result := DllCall("IbAhkSend\IbSendInit", "Int", 3, "Int", 0, "Ptr", 0, "Int")
     else if (send_type == "DD"){
         if (args.MaxIndex() == 1)
-            result := DllCall("IbAhkSend\IbSendInit", "Int", 3, "Int", 0, "WStr", args[1], "Int")
+            result := DllCall("IbAhkSend\IbSendInit", "Int", 4, "Int", 0, "WStr", args[1], "Int")
         else
-            result := DllCall("IbAhkSend\IbSendInit", "Int", 3, "Int", 0, "Ptr", 0, "Int")
+            result := DllCall("IbAhkSend\IbSendInit", "Int", 4, "Int", 0, "Ptr", 0, "Int")
     } else
         throw "Invalid send type"
     

@@ -24,6 +24,7 @@ namespace Send {
         AnyDriver,
         SendInput,
         Logitech,
+        Razer,
         DD
     };
 

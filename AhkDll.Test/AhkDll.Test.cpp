@@ -137,10 +137,12 @@ public:
 		BOOST_TEST_MESSAGE(fmt::format("    Duration: {}ns", t1));
 		//SendInput: 1000~3000us (1~3ms)
 		//Logitech: 25~45us
+		//Razer: 500~1000us
 		//DD: 70~110us
 		BOOST_TEST_MESSAGE(fmt::format("    Latency: {}ns", t2));
 		//SendInput: 100ns (0)
 		//Logitech: 0.8~4ms
+		//Razer: 0.8~10ms
 		//DD: 0.6~1ms
 	}
 };
@@ -168,10 +170,13 @@ public:
 		}
 		uint64_t t = measure.end();
 
+		Sleep(5000);  //avoid bothering other tests (Razer will queue all movements)
+
 		BOOST_TEST_MESSAGE("TestMouseMove:");
 		BOOST_TEST_MESSAGE(fmt::format("    Duration: {}ns", t / 10000));
 		//SendInput: 200~800us
 		//Logitech: 3~10us
+		//Razer: 3~5us
 		//DD: 500~1000us
 	}
 
@@ -199,6 +204,7 @@ public:
 		BOOST_TEST_MESSAGE(fmt::format("    Latency: {}ns", latency));
 		//SendInput: 0.003~0.2ms (3~200us)
 		//Logitech: 0.9~4ms
+		//Razer: 0.7~4ms
 		//DD: 1.1ms~1.3ms
 	}
 
@@ -225,28 +231,32 @@ public:
 	}
 
 	void TestMouseRelativeMove() {
-		POINT p1, p2, d1, d2;
-		GetCursorPos(&p1);
+		auto test = [](LONG movement) {
+			POINT p1, p2, d1, d2;
+			GetCursorPos(&p1);
 
-		INPUT input;
-		input.type = INPUT_MOUSE;
-		input.mi = {};
-		input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_MOVE_NOCOALESCE;
-		input.mi.dx = input.mi.dy = 100;
-		IbSendInput(1, &input, sizeof INPUT);
+			INPUT input;
+			input.type = INPUT_MOUSE;
+			input.mi = {};
+			input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_MOVE_NOCOALESCE;
+			input.mi.dx = input.mi.dy = movement;
+			IbSendInput(1, &input, sizeof INPUT);
 
-		GetCursorPos(&p2);
-		d1 = { p2.x - p1.x, p2.y - p1.y };
+			GetCursorPos(&p2);
+			d1 = { p2.x - p1.x, p2.y - p1.y };
 
-		Sleep(10);
+			Sleep(10);
 
-		GetCursorPos(&p2);
-		d2 = { p2.x - p1.x, p2.y - p1.y };
-		BOOST_CHECK((abs(d2.x - 100) <= 10 && abs(d2.y - 100) <= 100));
+			GetCursorPos(&p2);
+			d2 = { p2.x - p1.x, p2.y - p1.y };
+			BOOST_CHECK((abs(d2.x - movement) <= 10 && abs(d2.y - movement) <= 10));
 
-		BOOST_TEST_MESSAGE("TestMouseRelativeMove:");
-		BOOST_TEST_MESSAGE(fmt::format("    0ms: ({}, {})", d1.x, d1.y));
-		BOOST_TEST_MESSAGE(fmt::format("    10ms: ({}, {})", d2.x, d2.y));
+			BOOST_TEST_MESSAGE("TestMouseRelativeMove(" << movement << "):");
+			BOOST_TEST_MESSAGE(fmt::format("    0ms: ({}, {})", d1.x, d1.y));
+			BOOST_TEST_MESSAGE(fmt::format("    10ms: ({}, {})", d2.x, d2.y));
+		};
+		test(100);
+		test(-100);
 	}
 };
 
@@ -286,6 +296,7 @@ BOOST_AUTO_TEST_SUITE_END()
 CODE_GENERATE_TEST_NAME(SendInput_, SendInput)
 CODE_GENERATE_TEST(AnyDriver)
 CODE_GENERATE_TEST(Logitech)
+CODE_GENERATE_TEST(Razer)
 
 BOOST_AUTO_TEST_SUITE(DD)
     BOOST_FIXTURE_TEST_SUITE(Keyboard, KeyboardTest<SendType::DD>)

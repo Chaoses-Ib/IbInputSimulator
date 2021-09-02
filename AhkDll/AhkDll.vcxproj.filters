@@ -45,6 +45,12 @@
     <ClInclude Include="SendTypes\Types.hpp">
       <Filter>Header Files\SendTypes</Filter>
     </ClInclude>
+    <ClInclude Include="SendTypes\Razer.hpp">
+      <Filter>Header Files\SendTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="SendTypes\Usb.hpp">
+      <Filter>Header Files\SendTypes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

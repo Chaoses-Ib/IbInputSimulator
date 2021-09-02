@@ -9,6 +9,9 @@
 * [罗技游戏软件](https://support.logi.com/hc/zh-cn/articles/360025298053)  
   不需要罗技硬件。  
   用例：`IbSendInit("Logitech")`
+* [雷蛇雷云3](http://cn.razerzone.com/synapse-3)  
+  不需要雷蛇硬件，不过如果有的话会更安全。  
+  用例：`IbSendInit("Razer")`
 * [DD 虚拟鼠标 & 虚拟键盘](https://github.com/ddxoft/master)  
   可能会导致蓝屏；难以卸载干净。  
   使用时需要把 DLL 文件（`DD94687.64.dll`/`DD64.dll`/`DDHID64.dll`）与你的脚本文件放到一起，或者在调用 IbSendInit 时指定路径参数：

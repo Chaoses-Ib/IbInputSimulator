@@ -88,6 +88,9 @@ DLLAPI Send::Error __stdcall IbSendInit(SendType type, InitFlags flags, void* ar
         Error error = IbSendInit(SendType::Logitech, flags, nullptr);
         if (error == Error::Success) return Error::Success;
 
+        error = IbSendInit(SendType::Razer, flags, nullptr);
+        if (error == Error::Success) return Error::Success;
+
         error = IbSendInit(SendType::DD, flags, nullptr);
         if (error == Error::Success) return Error::Success;
 
@@ -108,6 +111,16 @@ DLLAPI Send::Error __stdcall IbSendInit(SendType type, InitFlags flags, void* ar
         case SendType::Logitech:
             {
                 auto type = std::make_unique<Type::Logitech>();
+                type->create_base(&SendInputHook::GetAsyncKeyState_real);
+                Error error = type->create();
+                if (error != Error::Success)
+                    return error;
+                send = std::move(type);
+            }
+            break;
+        case SendType::Razer:
+            {
+                auto type = std::make_unique<Type::Razer>();
                 type->create_base(&SendInputHook::GetAsyncKeyState_real);
                 Error error = type->create();
                 if (error != Error::Success)
