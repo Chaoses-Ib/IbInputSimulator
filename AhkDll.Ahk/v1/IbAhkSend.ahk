@@ -8,7 +8,7 @@ IbSendInit(send_type := "AnyDriver", mode := 1, args*){
     workding_dir := A_WorkingDir
     SetWorkingDir, %A_ScriptDir%
 
-    static hModule := DllCall("LoadLibrary", "Str", "IbAhkSend.dll", "Ptr")
+    static hModule := DllCall("LoadLibrary", "Str", A_ScriptDir "\IbAhkSend.dll", "Ptr")
     if (hModule == 0){
         if (A_PtrSize == 4)
             throw "SendLibLoadFailed: Please use AutoHotkey x64"

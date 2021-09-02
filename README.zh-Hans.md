@@ -13,8 +13,12 @@
   不需要雷蛇硬件，不过如果有的话会更安全。  
   用例：`IbSendInit("Razer")`
 * [DD 虚拟鼠标 & 虚拟键盘](https://github.com/ddxoft/master)  
-  可能会导致蓝屏；难以卸载干净。  
-  使用时需要把 DLL 文件（`DD94687.64.dll`/`DD64.dll`/`DDHID64.dll`）与你的脚本文件放到一起，或者在调用 IbSendInit 时指定路径参数：
+  可能会导致蓝屏；难以卸载干净；需要联网。  
+  使用时需要把 DLL 文件（`DD94687.64.dll`/`DD64.dll`/`DDHID64.dll`）与你的脚本文件放到一起，然后：
+  ```ahk
+  IbSendInit("DD")
+  ```
+  或者在调用 IbSendInit 时指定 DLL 路径：
   ```ahk
   IbSendInit("DD", 1, "C:\SomeDir\DD64.dll")
   ```
@@ -42,6 +46,8 @@ Send("Hello world+1")
 Sleep(100)
 MouseClickDrag("Left", 5, 5, 150, 50)</pre></td>
         <td><pre lang="ahk">; 运行记事本，输入“Hello world!”并通过鼠标全选文本。
+<br/>
+#Include %A_ScriptDir%
 <br/>
 #Include IbAhkSend.ahk
 <br/>

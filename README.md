@@ -13,8 +13,12 @@ An [AutoHotkey](https://www.autohotkey.com/) library that enables AHK to send ke
   No Razer hardware required, but it will be safer if you have one.  
   e.g. `IbSendInit("Razer")`
 * [DD Virtual Mouse & Virtual Keyboard](https://github.com/ddxoft/master)  
-  May cause a blue screen; difficult to uninstall cleanly.  
-  To use it, put the DLL (`DD94687.64.dll`/`DD64.dll`/`DDHID64.dll`) with your script file, or specify the path argument when call IbSendInit, e.g.:
+  May cause a blue screen; difficult to uninstall cleanly; need network.  
+  To use it, put the DLL (`DD94687.64.dll`/`DD64.dll`/`DDHID64.dll`) with your script file, and then:
+  ```ahk
+  IbSendInit("DD")
+  ```
+  or specify the DLL path when call IbSendInit:
   ```ahk
   IbSendInit("DD", 1, "C:\SomeDir\DD64.dll")
   ```
@@ -39,11 +43,13 @@ WinWaitActive("ahk_class #32770")
 Send("notepad`n")
 <br/>
 WinWaitActive("ahk_exe notepad.exe")
-Send("Hello world+1")
+Send("Hello world{!}")
 Sleep(100)
 MouseClickDrag("Left", 5, 5, 150, 50)</pre></td>
         <td><pre lang="ahk">; Run Notepad, type "Hello world!"
 ; and then select all text by mouse.
+<br/>
+#Include %A_ScriptDir%
 <br/>
 #Include IbAhkSend.ahk
 <br/>
@@ -54,7 +60,7 @@ WinWaitActive, ahk_class #32770
 Send notepad`n
 <br/>
 WinWaitActive, ahk_exe notepad.exe
-Send Hello world+1
+Send Hello world{!}
 Sleep 100
 CoordMode, Mouse, Client
 MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
