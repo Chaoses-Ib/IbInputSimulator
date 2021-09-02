@@ -1,7 +1,7 @@
 ; IbAhkSendLib (v1)
 ; Description: Enable AHK to send keystrokes by drivers.
 ; Author: Chaoses Ib
-; Version: 0.2
+; Version: 0.3
 ; Git: https://github.com/Chaoses-Ib/IbAhkSendLib
 
 IbSendInit(send_type := "AnyDriver", mode := 1, args*){
