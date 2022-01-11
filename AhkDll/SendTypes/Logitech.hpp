@@ -248,6 +248,11 @@ namespace Send::Type::Internal {
         std::mutex mouse_mutex;
 
     public:
+        uint32_t send_mouse_input(const INPUT inputs[], uint32_t n) override {
+            update_screen_resolution();
+            return Base::send_mouse_input(inputs, n);
+        }
+
         bool send_mouse_input(const MOUSEINPUT& mi) override {
             std::lock_guard lock(mouse_mutex);
             

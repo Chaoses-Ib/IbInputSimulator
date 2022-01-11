@@ -54,6 +54,14 @@ namespace Send::Type::Internal {
             absolute.y = absolute.y * screen.y / 65536;
         }
 
+        void update_screen_resolution() {
+            screen.x = GetSystemMetrics(SM_CXSCREEN);  //#TODO: SM_CXVIRTUALSCREEN?
+            screen.y = GetSystemMetrics(SM_CYSCREEN);
+
+            // the overhead of WM_DISPLAYCHANGE is a bit high
+        }
+
+        // need to call update_screen_resolution first
         static void mouse_screen_to_relative(POINT& screen_point) {
             POINT point;
             GetCursorPos(&point);
@@ -62,12 +70,10 @@ namespace Send::Type::Internal {
             screen_point.x -= point.x;
             screen_point.y -= point.y;
         }
+
     public:
         void create_base(decltype(&::GetAsyncKeyState)* get_key_state_fallback) {
             this->get_key_state_fallback = get_key_state_fallback;
-
-            screen.x = GetSystemMetrics(SM_CXSCREEN);  //#TODO: may change
-            screen.y = GetSystemMetrics(SM_CYSCREEN);
         }
 
         virtual void destroy() = 0;

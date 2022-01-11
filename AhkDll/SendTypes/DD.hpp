@@ -64,6 +64,11 @@ namespace Send::Type::Internal {
             FreeLibrary(dd);
         }
 
+        uint32_t send_mouse_input(const INPUT inputs[], uint32_t n) override {
+            update_screen_resolution();
+            return Base::send_mouse_input(inputs, n);
+        }
+
         bool send_mouse_input(const MOUSEINPUT& mi) override {
             //#TODO: MOUSEEVENTF_MOVE_NOCOALESCE, MOUSEEVENTF_VIRTUALDESK
             if (mi.dwFlags & MOUSEEVENTF_MOVE) {
