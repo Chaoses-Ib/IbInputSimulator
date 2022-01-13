@@ -69,11 +69,7 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
 ## 下载
 [Releases](../../releases)
 
-## 相关推荐
-* [IbLogiSoftExt](https://github.com/Chaoses-Ib/IbLogiSoftExt)
-
-## 开发者
-### 构建
+## 构建
 1. 将 [IbWinCppLib](https://github.com/Chaoses-Ib/IbWinCppLib/tree/master/WinCppLib/IbWinCppLib) 放入 `C:\L\C++\packages`（其它位置需要修改 .vcxproj 文件）。
 1. [vcpkg](https://github.com/microsoft/vcpkg)
     ```
@@ -85,3 +81,15 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
     vcpkg install boost-test fmt
     ```
     如果需要 x86 版本就把 VCPKG_DEFAULT_TRIPLET 改为  x86-windows-static-md。
+
+## 相关推荐
+* [IbLogiSoftExt](https://github.com/Chaoses-Ib/IbLogiSoftExt)
+
+## 鸣谢
+* 罗技
+  * @The-BigEagle
+  * [ekknod/logitech-cve](https://github.com/ekknod/logitech-cve)：了解到罗技设备可以被直接打开
+* 雷蛇
+  * [Sadmeme/rzctl](https://github.com/Sadmeme/rzctl)
+  * @任性：提供测试环境
+* @任性：提供反馈和赞助

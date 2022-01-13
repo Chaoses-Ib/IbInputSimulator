@@ -71,11 +71,7 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
 ## Downloading
 [Releases](../../releases)
 
-## See Also
-* [IbLogiSoftExt](https://github.com/Chaoses-Ib/IbLogiSoftExt)
-
-## For Developers
-### Building
+## Building
 1. Put [IbWinCppLib](https://github.com/Chaoses-Ib/IbWinCppLib/tree/master/WinCppLib/IbWinCppLib) in `C:\L\C++\packages` (in other locations you need to modify the .vcxproj files).
 1. [vcpkg](https://github.com/microsoft/vcpkg)
     ```
@@ -87,3 +83,15 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
     vcpkg install boost-test fmt
     ```
     Change VCPKG_DEFAULT_TRIPLET to x86-windows-static-md if you need x86 version. 
+
+## See Also
+* [IbLogiSoftExt](https://github.com/Chaoses-Ib/IbLogiSoftExt)
+
+## Credits
+* Logitech
+  * @The-BigEagle
+  * [ekknod/logitech-cve](https://github.com/ekknod/logitech-cve) for learning that Logitech devices can be opened directly
+* Razer
+  * [Sadmeme/rzctl](https://github.com/Sadmeme/rzctl)
+  * @任性 for providing test environment
+* @任性 for providing feedback and sponsorship
