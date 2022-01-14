@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "IbAhkSend.hpp"
+#include "IbInputSimulator.hpp"
 using namespace Send;
 
 #include <detours/detours.h>
@@ -9,7 +9,7 @@ using ib::Byte;
 constexpr int debug = ib::debug_runtime;
 
 ib::DebugOStream<> DebugOStream() {
-    return { L"IbAhkSendLib: " };
+    return { L"IbInputSimulator: " };
 }
 
 template<typename T>

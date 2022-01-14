@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include <stdint.h>
 
-#ifdef IB_AHKSEND_DLLEXPORT
+#ifdef IB_INPUT_DLLEXPORT
 #define DLLAPI extern "C" __declspec(dllexport)
 #else
 #define DLLAPI extern "C" __declspec(dllimport)

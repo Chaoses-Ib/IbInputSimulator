@@ -1,7 +1,7 @@
-﻿#include "../AhkDll/IbAhkSend.hpp"
+﻿#include "../Simulator/IbInputSimulator.hpp"
 using namespace Send;
 
-#define BOOST_TEST_MODULE AhkDll.Test
+#define BOOST_TEST_MODULE Test
 #include <boost/test/unit_test.hpp>
 #include <fmt/core.h>
 

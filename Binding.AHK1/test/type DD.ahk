@@ -1,4 +1,4 @@
 #Include %A_ScriptDir%
-#Include ..\IbAhkSend.ahk
+#Include ..\IbInputSimulator.ahk
 IbSendInit("DD")  ;or IbSendInit("DD", 1, "C:\SomeDir\DD64.dll")
-#include mode ahk.ahk
+#Include mode ahk.ahk

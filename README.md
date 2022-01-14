@@ -1,4 +1,4 @@
-# IbAhkSendLib
+# IbInputSimulator
 Languages: [English](README.md), [简体中文](README.zh-Hans.md)  
 An [AutoHotkey](https://www.autohotkey.com/) library that enables AHK to send keystrokes by drivers.
 
@@ -34,7 +34,7 @@ An [AutoHotkey](https://www.autohotkey.com/) library that enables AHK to send ke
         <td><pre lang="ahk">; Run Notepad, type "Hello world!"
 ; and then select all text by mouse.
 <br/>
-#Include "IbAhkSend.ahk"
+#Include "IbInputSimulator.ahk"
 <br/>
 IbSendInit()  ; IbSendInit("AnyDriver", 1)
 <br/>
@@ -51,7 +51,7 @@ MouseClickDrag("Left", 5, 5, 150, 50)</pre></td>
 <br/>
 #Include %A_ScriptDir%
 <br/>
-#Include IbAhkSend.ahk
+#Include IbInputSimulator.ahk
 <br/>
 IbSendInit() ; IbSendInit("AnyDriver", 1)
 <br/>

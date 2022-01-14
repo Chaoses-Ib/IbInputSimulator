@@ -1,7 +1,7 @@
 ; Mode 0
 ; Run Notepad, type "Hello world!" and then select all text by mouse.
 
-#Include "..\IbAhkSend.ahk"
+#Include "..\IbInputSimulator.ahk"
 
 IbSendInit("AnyDriver", 0)
 

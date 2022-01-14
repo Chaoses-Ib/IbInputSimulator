@@ -27,7 +27,7 @@
     <ClInclude Include="common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IbAhkSend.hpp">
+    <ClInclude Include="IbInputSimulator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SendTypes\Logitech.hpp">

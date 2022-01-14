@@ -1,17 +1,17 @@
-; Mode 1 (v1)
+; Mode 0 (v1)
 ; Run Notepad, type "Hello world!" and then select all text by mouse.
 
 #Include %A_ScriptDir%
-#Include ..\IbAhkSend.ahk
+#Include ..\IbInputSimulator.ahk
 
-IbSendInit()
+IbSendInit("AnyDriver", 0)
 
-Send #r
+IbSend("#r")
 WinWaitActive, ahk_class #32770
-Send notepad`n
+IbSend("notepad`n")
 
 WinWaitActive, ahk_exe notepad.exe
-Send Hello world{!}
+IbSend("Hello world{!}")
 Sleep 100
 CoordMode, Mouse, Client
-MouseClickDrag, Left, 5, 5, 150, 50
+IbSend("{Click 5, 5, down}{click 150, 50, up}")

@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{f5aa5311-dd5f-43f8-805a-d0f4bb19d32f}</ProjectGuid>
-    <RootNamespace>AhkDllTest</RootNamespace>
+    <RootNamespace>Test</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -155,10 +155,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AhkDll.Test.cpp" />
+    <ClCompile Include="Test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AhkDll\AhkDll.vcxproj">
+    <ProjectReference Include="..\Simulator\Simulator.vcxproj">
       <Project>{a8cc7e86-6e3f-4c18-bf47-f6aaf0afefa9}</Project>
     </ProjectReference>
   </ItemGroup>

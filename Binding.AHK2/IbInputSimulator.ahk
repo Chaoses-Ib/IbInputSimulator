@@ -1,16 +1,16 @@
-; IbAhkSendLib
+; IbInputSimulator
 ; Description: Enable AHK to send keystrokes by drivers.
 ; Author: Chaoses Ib
 ; Version: 0.3
-; Git: https://github.com/Chaoses-Ib/IbAhkSendLib
+; Git: https://github.com/Chaoses-Ib/IbInputSimulator
 
-#DllLoad "*i IbAhkSend.dll"  ;DllCall("LoadLibrary") cannot locate DLL correctly
+#DllLoad "*i IbInputSimulator.dll"  ;DllCall("LoadLibrary") cannot locate DLL correctly
 
 IbSendInit(send_type := "AnyDriver", mode := 1, args*){
     workding_dir := A_WorkingDir
     SetWorkingDir(A_ScriptDir)
 
-    static hModule := DllCall("GetModuleHandle", "Str", "IbAhkSend.dll", "Ptr")
+    static hModule := DllCall("GetModuleHandle", "Str", "IbInputSimulator.dll", "Ptr")
     if (hModule == 0){
         if (A_PtrSize == 4)
             throw "SendLibLoadFailed: Please use AutoHotkey x64"
@@ -19,18 +19,18 @@ IbSendInit(send_type := "AnyDriver", mode := 1, args*){
     }
     
     if (send_type == "AnyDriver")
-        result := DllCall("IbAhkSend\IbSendInit", "Int", 0, "Int", 0, "Ptr", 0, "Int")
+        result := DllCall("IbInputSimulator\IbSendInit", "Int", 0, "Int", 0, "Ptr", 0, "Int")
     else if (send_type == "SendInput")
-        result := DllCall("IbAhkSend\IbSendInit", "Int", 1, "Int", 0, "Ptr", 0, "Int")
+        result := DllCall("IbInputSimulator\IbSendInit", "Int", 1, "Int", 0, "Ptr", 0, "Int")
     else if (send_type == "Logitech")
-        result := DllCall("IbAhkSend\IbSendInit", "Int", 2, "Int", 0, "Ptr", 0, "Int")
+        result := DllCall("IbInputSimulator\IbSendInit", "Int", 2, "Int", 0, "Ptr", 0, "Int")
     else if (send_type == "Razer")
-        result := DllCall("IbAhkSend\IbSendInit", "Int", 3, "Int", 0, "Ptr", 0, "Int")
+        result := DllCall("IbInputSimulator\IbSendInit", "Int", 3, "Int", 0, "Ptr", 0, "Int")
     else if (send_type == "DD"){
         if (args.Length == 1)
-            result := DllCall("IbAhkSend\IbSendInit", "Int", 4, "Int", 0, "WStr", args[1], "Int")
+            result := DllCall("IbInputSimulator\IbSendInit", "Int", 4, "Int", 0, "WStr", args[1], "Int")
         else
-            result := DllCall("IbAhkSend\IbSendInit", "Int", 4, "Int", 0, "Ptr", 0, "Int")
+            result := DllCall("IbInputSimulator\IbSendInit", "Int", 4, "Int", 0, "Ptr", 0, "Int")
     } else
         throw "Invalid send type"
 
@@ -57,30 +57,30 @@ IbSendInit(send_type := "AnyDriver", mode := 1, args*){
 IbSendMode(mode){
     static ahk_mode := ""
     if (mode == 1){
-        DllCall("IbAhkSend\IbSendInputHook", "Int", 1)
+        DllCall("IbInputSimulator\IbSendInputHook", "Int", 1)
         ahk_mode := A_SendMode
         SendMode("Input")
     } else if (mode == 0){
         SendMode(ahk_mode)
-        DllCall("IbAhkSend\IbSendInputHook", "Int", 0)
+        DllCall("IbInputSimulator\IbSendInputHook", "Int", 0)
     } else {
         throw "Invalid send mode"
     }
 }
 
 IbSendDestroy(){
-    DllCall("IbAhkSend\IbSendDestroy")
+    DllCall("IbInputSimulator\IbSendDestroy")
     ;DllCall("FreeLibrary", "Ptr", hModule)
 }
 
 IbSyncKeyStates(){
-    DllCall("IbAhkSend\IbSendSyncKeyStates")
+    DllCall("IbInputSimulator\IbSendSyncKeyStates")
 }
 
 IbSend(keys){
-    DllCall("IbAhkSend\IbSendInputHook", "Int", 1)  ;or IbSendMode(1)
+    DllCall("IbInputSimulator\IbSendInputHook", "Int", 1)  ;or IbSendMode(1)
     SendInput(keys)
-    DllCall("IbAhkSend\IbSendInputHook", "Int", 0)  ;or IbSendMode(0)
+    DllCall("IbInputSimulator\IbSendInputHook", "Int", 0)  ;or IbSendMode(0)
 }
 
 IbClick(args*){

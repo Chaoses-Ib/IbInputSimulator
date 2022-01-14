@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include <bit>
-#include "IbAhkSend.hpp"
+#include "IbInputSimulator.hpp"
 using namespace Send;
 
 

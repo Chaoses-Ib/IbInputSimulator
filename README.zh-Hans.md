@@ -1,4 +1,4 @@
-# IbAhkSendLib
+# IbInputSimulator
 语言：[English](README.md)，[简体中文](README.zh-Hans.md)  
 [AutoHotkey](https://www.autohotkey.com/) 驱动按键库。  
 
@@ -33,7 +33,7 @@
     <tr>
         <td><pre lang="ahk">; 运行记事本，输入“Hello world!”并通过鼠标全选文本。
 <br/>
-#Include "IbAhkSend.ahk"
+#Include "IbInputSimulator.ahk"
 <br/>
 IbSendInit() ; IbSendInit("AnyDriver", 1)
 <br/>
@@ -49,7 +49,7 @@ MouseClickDrag("Left", 5, 5, 150, 50)</pre></td>
 <br/>
 #Include %A_ScriptDir%
 <br/>
-#Include IbAhkSend.ahk
+#Include IbInputSimulator.ahk
 <br/>
 IbSendInit() ; IbSendInit("AnyDriver", 1)
 <br/>
