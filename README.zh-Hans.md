@@ -1,6 +1,6 @@
 # IbInputSimulator
 语言：[English](README.md)，[简体中文](README.zh-Hans.md)  
-[AutoHotkey](https://www.autohotkey.com/) 驱动按键库。  
+一个用于模拟键盘、鼠标和其它输入的库。
 
 ## 支持驱动
 * [罗技 G HUB](https://www.logitechg.com.cn/zh-cn/innovation/g-hub.html)  
@@ -23,7 +23,8 @@
   IbSendInit("DD", 1, "C:\SomeDir\DD64.dll")
   ```
 
-## 例子
+## 支持语言
+### AHK
 <table>
 <thead><tr>
     <th>AHK v2</th>
@@ -42,13 +43,12 @@ WinWaitActive("ahk_class #32770")
 Send("notepad`n")
 <br/>
 WinWaitActive("ahk_exe notepad.exe")
-Send("Hello world+1")
+Send("Hello world{!}")
 Sleep(100)
 MouseClickDrag("Left", 5, 5, 150, 50)</pre></td>
         <td><pre lang="ahk">; 运行记事本，输入“Hello world!”并通过鼠标全选文本。
 <br/>
 #Include %A_ScriptDir%
-<br/>
 #Include IbInputSimulator.ahk
 <br/>
 IbSendInit() ; IbSendInit("AnyDriver", 1)
@@ -58,7 +58,7 @@ WinWaitActive, ahk_class #32770
 Send notepad`n
 <br/>
 WinWaitActive, ahk_exe notepad.exe
-Send Hello world+1
+Send Hello world{!}
 Sleep 100
 CoordMode, Mouse, Client
 MouseClickDrag, Left, 5, 5, 150, 50</pre></td>

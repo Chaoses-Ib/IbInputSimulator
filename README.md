@@ -1,6 +1,6 @@
 # IbInputSimulator
 Languages: [English](README.md), [简体中文](README.zh-Hans.md)  
-An [AutoHotkey](https://www.autohotkey.com/) library that enables AHK to send keystrokes by drivers.
+A library for simulating keyboard, mouse and other inputs.
 
 ## Supported Drivers
 * [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html)  
@@ -23,7 +23,8 @@ An [AutoHotkey](https://www.autohotkey.com/) library that enables AHK to send ke
   IbSendInit("DD", 1, "C:\SomeDir\DD64.dll")
   ```
 
-## Example
+## Supported Languages
+### AHK
 <table>
 <thead><tr>
     <th>AHK v2</th>
@@ -50,7 +51,6 @@ MouseClickDrag("Left", 5, 5, 150, 50)</pre></td>
 ; and then select all text by mouse.
 <br/>
 #Include %A_ScriptDir%
-<br/>
 #Include IbInputSimulator.ahk
 <br/>
 IbSendInit() ; IbSendInit("AnyDriver", 1)
