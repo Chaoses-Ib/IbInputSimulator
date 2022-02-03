@@ -1,5 +1,4 @@
-﻿#include "pch.h"
-#include <bit>
+﻿#include <bit>
 #include <cassert>
 #include "IbInputSimulator.hpp"
 using namespace Send;

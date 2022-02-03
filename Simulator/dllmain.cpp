@@ -1,5 +1,4 @@
-﻿#include "pch.h"
-#include "IbInputSimulator.hpp"
+﻿#include "IbInputSimulator.hpp"
 using namespace Send;
 
 #include "SendTypes/Types.hpp"
@@ -24,7 +23,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     return TRUE;
 }
 
-static std::unique_ptr<Type::Base> send;
+namespace main {
+    static std::unique_ptr<Type::Base> send;
+}
 
 class SendInputHook {
 public:
@@ -33,7 +34,7 @@ public:
         if (!hook)
             return SendInput_real(cInputs, pInputs, cbSize);
 
-        return send->send_input(pInputs, cInputs);
+        return main::send->send_input(pInputs, cInputs);
     }
 
     //#TODO: only needed when two or more AHK processes exist?
@@ -43,8 +44,8 @@ public:
             return GetAsyncKeyState_real(vKey);
 
         if constexpr (debug)
-            DebugOStream() << L"GetAsyncKeyState: " << vKey << ", " << send->get_key_state(vKey) << std::endl;
-        return send->get_key_state(vKey);
+            DebugOStream() << L"GetAsyncKeyState: " << vKey << ", " << main::send->get_key_state(vKey) << std::endl;
+        return main::send->get_key_state(vKey);
     }
 
 public:
@@ -105,7 +106,7 @@ DLLAPI Send::Error __stdcall IbSendInit(SendType type, InitFlags flags, void* ar
                 Error error = type->create(&SendInputHook::SendInput_real);
                 if (error != Error::Success)
                     return error;
-                send = std::move(type);
+                main::send = std::move(type);
             }
             break;
         case SendType::Logitech:
@@ -115,7 +116,7 @@ DLLAPI Send::Error __stdcall IbSendInit(SendType type, InitFlags flags, void* ar
                 Error error = type->create();
                 if (error != Error::Success)
                     return error;
-                send = std::move(type);
+                main::send = std::move(type);
             }
             break;
         case SendType::Razer:
@@ -125,7 +126,7 @@ DLLAPI Send::Error __stdcall IbSendInit(SendType type, InitFlags flags, void* ar
                 Error error = type->create();
                 if (error != Error::Success)
                     return error;
-                send = std::move(type);
+                main::send = std::move(type);
             }
             break;
         case SendType::DD:
@@ -135,7 +136,7 @@ DLLAPI Send::Error __stdcall IbSendInit(SendType type, InitFlags flags, void* ar
                 Error error = type->create(ib::Addr(argument));
                 if (error != Error::Success)
                     return error;
-                send = std::move(type);
+                main::send = std::move(type);
             }
             break;
         default:
@@ -148,14 +149,14 @@ DLLAPI Send::Error __stdcall IbSendInit(SendType type, InitFlags flags, void* ar
 DLLAPI void __stdcall IbSendDestroy() {
     IbSendInputHook(HookCode::Destroy);
 
-    if (!send)
+    if (!main::send)
         return;
-    send->destroy();
-    send.release();
+    main::send->destroy();
+    main::send.release();
 }
 
 DLLAPI void __stdcall IbSendSyncKeyStates() {
-    send->sync_key_states();
+    main::send->sync_key_states();
 }
 
 DLLAPI UINT WINAPI IbSendInput(
@@ -163,5 +164,5 @@ DLLAPI UINT WINAPI IbSendInput(
     _In_reads_(cInputs) LPINPUT pInputs,
     _In_ int cbSize
 ) {
-    return send->send_input(pInputs, cInputs);
+    return main::send->send_input(pInputs, cInputs);
 }
