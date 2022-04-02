@@ -1,7 +1,7 @@
-﻿#include "IbInputSimulator.hpp"
+﻿#include <IbInputSimulator/InputSimulator.hpp>
 using namespace Send;
 
-#include "SendTypes/Types.hpp"
+#include <IbInputSimulator/SendTypes/types.hpp>
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -73,7 +73,7 @@ DLLAPI void __stdcall IbSendInputHook(HookCode code) {
         sendinput_hook.destroy();
         break;
     case HookCode::On:
-        if (!sendinput_hook.has_created())
+        if (!sendinput_hook.created())
             sendinput_hook.create();
         sendinput_hook->hook = true;
         break;

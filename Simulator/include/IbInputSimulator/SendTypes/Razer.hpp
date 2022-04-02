@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "Base.hpp"
-#include "Usb.hpp"
+#include "base.hpp"
+#include "usb.hpp"
 
 namespace Send::Type::Internal {
     class Razer final : virtual public Base, public VirtualKeyStates {

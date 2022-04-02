@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include <IbWinCppLib/WinCppLib.hpp>
+#include <IbWinCpp/WinCpp.hpp>
 
-#include "Base.hpp"
+#include "base.hpp"
 
 namespace Send::Type::Internal {
     class DD final : virtual public Base, public VirtualKeyStates {

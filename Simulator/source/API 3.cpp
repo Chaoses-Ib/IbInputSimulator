@@ -1,6 +1,6 @@
 ﻿#include <bit>
 #include <cassert>
-#include "IbInputSimulator.hpp"
+#include <IbInputSimulator/InputSimulator.hpp>
 using namespace Send;
 
 

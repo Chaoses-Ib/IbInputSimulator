@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Base.hpp"
+#include "base.hpp"
 #include "SendInput.hpp"
 #include "Logitech.hpp"
 #include "Razer.hpp"

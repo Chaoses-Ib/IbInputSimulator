@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Base.hpp"
+#include "base.hpp"
 
 namespace Send::Type::Internal {
     class SendInput final : virtual public Base {

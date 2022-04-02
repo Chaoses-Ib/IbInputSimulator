@@ -72,17 +72,24 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
 [Releases](../../releases)
 
 ## Building
-1. Put [IbWinCppLib](https://github.com/Chaoses-Ib/IbWinCppLib/tree/master/WinCppLib/IbWinCppLib) in `C:\L\C++\packages` (in other locations you need to modify the .vcxproj files).
-1. [vcpkg](https://github.com/microsoft/vcpkg)
-    ```
-    set VCPKG_DEFAULT_TRIPLET=x64-windows-static-md
-    vcpkg install detours rapidjson
-    ```
-    For Test project you also need:
-    ```
-    vcpkg install boost-test fmt
-    ```
-    Change VCPKG_DEFAULT_TRIPLET to x86-windows-static-md if you need x86 version. 
+[vcpkg](https://github.com/microsoft/vcpkg):
+```
+set VCPKG_DEFAULT_TRIPLET=x64-windows-static-md
+vcpkg install detours rapidjson
+```
+CMake:
+```
+mkdir build
+cd build
+cmake .. -DCMAKE_TOOLCHAIN_FILE="C:\...\vcpkg\scripts\buildsystems\vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static-md
+cmake --build . --config Release
+```
+
+For the test you also need:
+```
+vcpkg install boost-test fmt
+```
+And add `-DBUILD_TESTING=ON` when calling `cmake ..` .
 
 ## See Also
 * [IbLogiSoftExt](https://github.com/Chaoses-Ib/IbLogiSoftExt)

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "../common.hpp"
 #include <mutex>
-#include <IbWinCppLib/WinCppLib.hpp>
+#include <IbWinCpp/WinCpp.hpp>
 
 #include <winternl.h>
 #pragma comment(lib, "ntdll.lib")
@@ -66,7 +66,7 @@ namespace Send::Type::Internal {
             POINT point;
             GetCursorPos(&point);
             if constexpr (debug)
-                ib::DebugOStream() << L"mouse_screen_to_relative: cursor (" << point.x << L", " << point.y << L") to point (" << screen_point.x << L", " << screen_point.y << L")\n";
+                DebugOStream() << L"mouse_screen_to_relative: cursor (" << point.x << L", " << point.y << L") to point (" << screen_point.x << L", " << screen_point.y << L")\n";
             screen_point.x -= point.x;
             screen_point.y -= point.y;
         }

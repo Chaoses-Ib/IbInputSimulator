@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "IbInputSimulator.hpp"
+#include "InputSimulator.hpp"
 using namespace Send;
 
 #include <detours/detours.h>
-#include <IbWinCppLib/WinCppLib.hpp>
+#include <IbWinCpp/WinCpp.hpp>
 using ib::Byte;
 
 constexpr int debug = ib::debug_runtime;

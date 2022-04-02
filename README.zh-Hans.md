@@ -70,17 +70,7 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
 [Releases](../../releases)
 
 ## 构建
-1. 将 [IbWinCppLib](https://github.com/Chaoses-Ib/IbWinCppLib/tree/master/WinCppLib/IbWinCppLib) 放入 `C:\L\C++\packages`（其它位置需要修改 .vcxproj 文件）。
-1. [vcpkg](https://github.com/microsoft/vcpkg)
-    ```
-    set VCPKG_DEFAULT_TRIPLET=x64-windows-static-md
-    vcpkg install detours rapidjson
-    ```
-    Test 项目还需要：
-    ```
-    vcpkg install boost-test fmt
-    ```
-    如果需要 x86 版本就把 VCPKG_DEFAULT_TRIPLET 改为  x86-windows-static-md。
+[Building](README.md#Building)
 
 ## 相关推荐
 * [IbLogiSoftExt](https://github.com/Chaoses-Ib/IbLogiSoftExt)

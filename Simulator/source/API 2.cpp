@@ -1,5 +1,5 @@
 ﻿#include <bit>
-#include "IbInputSimulator.hpp"
+#include <IbInputSimulator/InputSimulator.hpp>
 using namespace Send;
 
 

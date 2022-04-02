@@ -1,4 +1,4 @@
-﻿#include "../Simulator/IbInputSimulator.hpp"
+﻿#include <IbInputSimulator/InputSimulator.hpp>
 using namespace Send;
 
 #define BOOST_TEST_MODULE Test
@@ -9,7 +9,7 @@ using namespace Send;
 #include <mutex>
 #include <future>
 #include <queue>
-#include <IbWinCppLib/WinCppLib.hpp>
+#include <IbWinCpp/WinCpp.hpp>
 #include "Vk.hpp"
 
 

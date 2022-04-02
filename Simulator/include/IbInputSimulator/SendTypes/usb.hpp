@@ -198,13 +198,13 @@ namespace Send::Type::Internal {
             case 0xFE: return 0x0000;  //VK_OEM_CLEAR
             case 0xFF: return 0x0000;
             default:
-                if ('A' <= vkCode and vkCode <= 'Z')
+                if ('A' <= vkCode && vkCode <= 'Z')
                     return 0x04 + vkCode - 'A';
-                else if ('0' <= vkCode and vkCode <= '9')
+                else if ('0' <= vkCode && vkCode <= '9')
                     return vkCode == '0' ? 0x27 : 0x1E + vkCode - '1';
-                else if (VK_NUMPAD0 <= vkCode and vkCode <= VK_NUMPAD9)
+                else if (VK_NUMPAD0 <= vkCode && vkCode <= VK_NUMPAD9)
                     return vkCode == VK_NUMPAD0 ? 0x62 : 0x59 + vkCode - VK_NUMPAD1;
-                else if (VK_F1 <= vkCode and vkCode <= VK_F24)
+                else if (VK_F1 <= vkCode && vkCode <= VK_F24)
                     return vkCode <= VK_F12
                     ? 0x3A + vkCode - VK_F1
                     : 0x68 + vkCode - VK_F13;

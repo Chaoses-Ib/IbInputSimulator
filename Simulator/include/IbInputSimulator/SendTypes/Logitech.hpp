@@ -3,8 +3,8 @@
 #include <rapidjson/document.h>
 #include <rapidjson/filereadstream.h>
 #include "../common.hpp"
-#include "Base.hpp"
-#include "Usb.hpp"
+#include "base.hpp"
+#include "usb.hpp"
 
 namespace Send::Type::Internal {
     class LogitechDriver {
