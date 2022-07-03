@@ -76,7 +76,7 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
 ## Building
 [vcpkg](https://github.com/microsoft/vcpkg):
 ```
-vcpkg install detours rapidjson --triplet==x64-windows-static
+vcpkg install detours rapidjson --triplet=x64-windows-static
 ```
 CMake:
 ```
