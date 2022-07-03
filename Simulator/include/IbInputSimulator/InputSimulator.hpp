@@ -84,8 +84,8 @@ DLLAPI VOID WINAPI IbSend_keybd_event(
 
 namespace Send {
     enum class MoveMode : uint32_t {
-        Absolute,  //1
-        Relative   //2
+        Absolute,  //0
+        Relative   //1
     };
 
     enum class MouseButton : uint32_t {
