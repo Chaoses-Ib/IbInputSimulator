@@ -1,5 +1,4 @@
 # IbInputSimulator
-Languages: [English](README.md), [简体中文](README.zh-Hans.md)  
 A library for simulating keyboard, mouse and other inputs.
 
 ## Download
