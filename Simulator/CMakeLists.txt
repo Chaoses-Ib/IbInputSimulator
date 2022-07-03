@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
 
 project(IbInputSimulator)
 
@@ -25,6 +25,9 @@ set(sourceFiles
 )
 list(TRANSFORM sourceFiles PREPEND source/)
 add_library(IbInputSimulator SHARED ${sourceFiles})
+set_property(TARGET IbInputSimulator PROPERTY
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+)
 target_compile_features(IbInputSimulator PUBLIC cxx_std_20)
 target_compile_definitions(IbInputSimulator PRIVATE IB_INPUT_DLLEXPORT)
 

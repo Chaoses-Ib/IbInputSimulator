@@ -12,6 +12,8 @@
 * [雷蛇雷云3](http://cn.razerzone.com/synapse-3)  
   不需要雷蛇硬件，不过如果有的话会更安全。  
   用例：`IbSendInit("Razer")`
+* [MouClassInputInjection](https://github.com/Chaoses-Ib/MouClassInputInjection)  
+  用例：`IbSendInit("MouClassInputInjection", 1, process_id)`
 * [DD 虚拟鼠标 & 虚拟键盘](https://github.com/ddxoft/master)  
   可能会导致蓝屏；难以卸载干净；需要联网。  
   使用时需要把 DLL 文件（`DD94687.64.dll`/`DD64.dll`/`DDHID64.dll`）与你的脚本文件放到一起，然后：

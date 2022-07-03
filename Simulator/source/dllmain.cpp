@@ -95,6 +95,9 @@ DLLAPI Send::Error __stdcall IbSendInit(SendType type, InitFlags flags, void* ar
         error = IbSendInit(SendType::DD, flags, nullptr);
         if (error == Error::Success) return Error::Success;
 
+        error = IbSendInit(SendType::MouClassInputInjection, flags, nullptr);
+        if (error == Error::Success) return Error::Success;
+
         return Error::DeviceNotFound;
     }
     else {
@@ -134,6 +137,16 @@ DLLAPI Send::Error __stdcall IbSendInit(SendType type, InitFlags flags, void* ar
                 auto type = std::make_unique<Type::DD>();
                 type->create_base(&SendInputHook::GetAsyncKeyState_real);
                 Error error = type->create(ib::Addr(argument));
+                if (error != Error::Success)
+                    return error;
+                main::send = std::move(type);
+            }
+            break;
+        case SendType::MouClassInputInjection:
+            {
+                auto type = std::make_unique<Type::MouClassInputInjection>();
+                type->create_base(&SendInputHook::GetAsyncKeyState_real);
+                Error error = type->create((ULONG_PTR)argument);
                 if (error != Error::Success)
                     return error;
                 main::send = std::move(type);

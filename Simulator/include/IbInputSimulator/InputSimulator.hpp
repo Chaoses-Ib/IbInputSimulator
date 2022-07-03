@@ -25,7 +25,8 @@ namespace Send {
         SendInput,
         Logitech,
         Razer,
-        DD
+        DD,
+        MouClassInputInjection
     };
 
     using InitFlags = const uint32_t;

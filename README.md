@@ -12,6 +12,8 @@ A library for simulating keyboard, mouse and other inputs.
 * [Razer Synapse 3](https://www.razer.com/synapse-3)  
   No Razer hardware required, but it will be safer if you have one.  
   e.g. `IbSendInit("Razer")`
+* [MouClassInputInjection](https://github.com/Chaoses-Ib/MouClassInputInjection)  
+  e.g. `IbSendInit("MouClassInputInjection", 1, process_id)`
 * [DD Virtual Mouse & Virtual Keyboard](https://github.com/ddxoft/master)  
   May cause a blue screen; difficult to uninstall cleanly; need network.  
   To use it, put the DLL (`DD94687.64.dll`/`DD64.dll`/`DDHID64.dll`) with your script file, and then:
@@ -74,14 +76,13 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
 ## Building
 [vcpkg](https://github.com/microsoft/vcpkg):
 ```
-set VCPKG_DEFAULT_TRIPLET=x64-windows-static-md
-vcpkg install detours rapidjson
+vcpkg install detours rapidjson --triplet==x64-windows-static
 ```
 CMake:
 ```
 mkdir build
 cd build
-cmake .. -DCMAKE_TOOLCHAIN_FILE="C:\...\vcpkg\scripts\buildsystems\vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static-md
+cmake .. -DCMAKE_TOOLCHAIN_FILE="C:\...\vcpkg\scripts\buildsystems\vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static
 cmake --build . --config Release
 ```
 

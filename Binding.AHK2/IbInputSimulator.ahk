@@ -31,6 +31,10 @@ IbSendInit(send_type := "AnyDriver", mode := 1, args*){
             result := DllCall("IbInputSimulator\IbSendInit", "Int", 4, "Int", 0, "WStr", args[1], "Int")
         else
             result := DllCall("IbInputSimulator\IbSendInit", "Int", 4, "Int", 0, "Ptr", 0, "Int")
+    } else if (send_type == "MouClassInputInjection"){
+        if (args.Length != 1)
+            throw "MouClassInputInjection: Please specify the process ID of the target process"
+        result := DllCall("IbInputSimulator\IbSendInit", "Int", 5, "Int", 0, "UInt64", args[1], "Int")
     } else
         throw "Invalid send type"
 
