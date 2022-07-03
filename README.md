@@ -2,6 +2,9 @@
 Languages: [English](README.md), [简体中文](README.zh-Hans.md)  
 A library for simulating keyboard, mouse and other inputs.
 
+## Download
+[Releases](https://github.com/Chaoses-Ib/IbInputSimulator/releases)
+
 ## Supported Drivers
 * [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html)  
   No Logitech hardware required.  
@@ -24,13 +27,19 @@ A library for simulating keyboard, mouse and other inputs.
   ```ahk
   IbSendInit("DD", 1, "C:\SomeDir\DD64.dll")
   ```
+* [EDI](https://t.me/Chaoses_Ib) (paid)
+
+## Software Compatibility
+Software | SendInput | Logitech | Razer | MCII | DD | EDI | DM | Other
+--- | --- | --- | --- | --- | --- | --- | --- | ---
+Blade & Soul (Korean) <!--220703--> | | ✔️ | | | ❗ | ✔️ | ✔️ | ❌ SendInput hook
 
 ## Supported Languages
-### AHK
+### AutoHotkey
 <table>
 <thead><tr>
-    <th>AHK v2</th>
-    <th>AHK v1</th>
+    <th>AutoHotkey v2</th>
+    <th>AutoHotkey v1</th>
 </tr></thead>
 <tbody>
     <tr>
@@ -70,10 +79,7 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
 </tbody>
 </table>
 
-## Downloading
-[Releases](../../releases)
-
-## Building
+## Build
 [vcpkg](https://github.com/microsoft/vcpkg):
 ```
 vcpkg install detours rapidjson --triplet=x64-windows-static
