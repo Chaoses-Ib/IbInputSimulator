@@ -4,7 +4,7 @@ A library for simulating keyboard, mouse and other inputs.
 ## Download
 [Releases](https://github.com/Chaoses-Ib/IbInputSimulator/releases)
 
-## Supported Drivers
+## Supported drivers
 * [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html)  
   No Logitech hardware required.  
   e.g. `IbSendInit("Logitech")`
@@ -12,7 +12,7 @@ A library for simulating keyboard, mouse and other inputs.
   No Logitech hardware required.  
   e.g. `IbSendInit("Logitech")`
 * [Razer Synapse 3](https://www.razer.com/synapse-3)  
-  No Razer hardware required, but it will be safer if you have one.  
+  Require Razer hardware. (Note that the old versions do not require Razer hardware, however, Razer Synapse 3 only provides an online installer and there is no way to install an old version)  
   e.g. `IbSendInit("Razer")`
 * [MouClassInputInjection](https://github.com/Chaoses-Ib/MouClassInputInjection)  
   e.g. `IbSendInit("MouClassInputInjection", 1, process_id)`
@@ -28,12 +28,12 @@ A library for simulating keyboard, mouse and other inputs.
   ```
 * [EDI](https://t.me/Chaoses_Ib) (paid)
 
-## Software Compatibility
+## Software compatibility
 Software | SendInput | Logitech | Razer | MCII | DD | EDI | DM | Other
 --- | --- | --- | --- | --- | --- | --- | --- | ---
 Blade & Soul (Korean) <!--220703--> | | ✔️ | | | ❗ | ✔️ | ✔️ | ❌ SendInput hook
 
-## Supported Languages
+## Supported languages
 ### AutoHotkey
 <table>
 <thead><tr>
@@ -97,7 +97,7 @@ vcpkg install boost-test fmt
 ```
 And add `-DBUILD_TESTING=ON` when calling `cmake ..` .
 
-## See Also
+## See also
 * [IbLogiSoftExt](https://github.com/Chaoses-Ib/IbLogiSoftExt)
 
 ## Credits
