@@ -110,7 +110,9 @@ And add `-DBUILD_TESTING=ON` when calling `cmake ..` .
 
 Sponsors:
 
-Date | Sponsor
---- | ---
-2023-02-28 | -
-2021-08-28 | 任性
+Date | Sponsor | Comment
+--- | --- | ---
+2022-04-03 | 任性 | MouClassInputInjection
+2023-04-22 | 任性 | Logitech
+2023-02-28 | - |
+2021-08-28 | 任性 | Razer
