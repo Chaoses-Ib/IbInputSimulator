@@ -5,19 +5,32 @@ A library for simulating keyboard, mouse and other inputs.
 [Releases](https://github.com/Chaoses-Ib/IbInputSimulator/releases)
 
 ## Supported drivers
-- [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html)  
-  No Logitech hardware required.  
+- [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html)
+
+  No Logitech hardware required.
+
   e.g. `IbSendInit("Logitech")`
-- [Logitech Gaming Software](https://support.logi.com/hc/en-gb/articles/360025298053-Logitech-Gaming-Software)  
-  No Logitech hardware required.  
+
+- [Logitech Gaming Software](https://support.logi.com/hc/en-gb/articles/360025298053-Logitech-Gaming-Software)
+
+  No Logitech hardware required.
+
   e.g. `IbSendInit("Logitech")`
-- [Razer Synapse 3](https://www.razer.com/synapse-3)  
-  Require Razer hardware. (Note that the old versions do not require Razer hardware, however, Razer Synapse 3 only provides an online installer and there is no way to install an old version)  
+
+- [Razer Synapse 3](https://www.razer.com/synapse-3)
+
+  Require Razer hardware. (Note that the old versions do not require Razer hardware, however, Razer Synapse 3 only provides an online installer and there is no way to install an old version)
+
   e.g. `IbSendInit("Razer")`
-- [MouClassInputInjection](https://github.com/Chaoses-Ib/MouClassInputInjection)  
+
+- [MouClassInputInjection](https://github.com/Chaoses-Ib/MouClassInputInjection)
+
   e.g. `IbSendInit("MouClassInputInjection", 1, process_id)`
-- [DD Virtual Mouse & Virtual Keyboard](https://github.com/ddxoft/master)  
-  May cause a blue screen; difficult to uninstall cleanly; need network.  
+
+- [DD Virtual Mouse & Virtual Keyboard](https://github.com/ddxoft/master)
+
+  May cause a blue screen; difficult to uninstall cleanly; need network.
+
   To use it, put the DLL (`DD94687.64.dll`/`DD64.dll`/`DDHID64.dll`) with your script file, and then:
   ```ahk
   IbSendInit("DD")
@@ -26,12 +39,16 @@ A library for simulating keyboard, mouse and other inputs.
   ```ahk
   IbSendInit("DD", 1, "C:\SomeDir\DD64.dll")
   ```
+
 - [EDI](https://t.me/Chaoses_Ib) (paid)
 
 ## Software compatibility
 Software | SendInput | Logitech | Razer | MCII | DD | EDI | DM | Other
 --- | --- | --- | --- | --- | --- | --- | --- | ---
 Blade & Soul (Korean) <!--220703--> | | ✔️ | | | ❗ | ✔️ | ✔️ | ❌ SendInput hook
+Genshin | [High](https://meta.appinn.net/t/topic/44865/10?u=chaoses_ib)
+
+For SendInput, software with `High` indicates that the target process usually has a high integrity level, which may block SendInput due to UIPI. To put it simply, this means that you need to run the input simulator with administrator privileges.
 
 ## Supported languages
 ### AutoHotkey
