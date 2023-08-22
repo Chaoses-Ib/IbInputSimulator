@@ -40,7 +40,7 @@ A library for simulating keyboard, mouse and other inputs.
   IbSendInit("DD", 1, "C:\SomeDir\DD64.dll")
   ```
 
-- [EDI](https://t.me/Chaoses_Ib) (paid)
+- [EDI](https://t.me/Chaoses_Ib) (private, not for sale)
 
 ## Software compatibility
 Software | SendInput | Logitech | Razer | MCII | DD | EDI | DM | Other
