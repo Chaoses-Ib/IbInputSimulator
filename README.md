@@ -1,25 +1,25 @@
 # IbInputSimulator
-A library for simulating keyboard, mouse and other inputs.
+A library for simulating keyboard and mouse input with drivers.
 
 ## Download
 [Releases](https://github.com/Chaoses-Ib/IbInputSimulator/releases)
 
 ## Supported drivers
-- [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html)
+- [Logitech Gaming Software](https://support.logi.com/hc/en-gb/articles/360025298053-Logitech-Gaming-Software)
 
-  No Logitech hardware required.
+  No Logitech hardware required. However, in the new versions of LGS, the mouse driver has been removed ([#8](https://github.com/Chaoses-Ib/IbInputSimulator/issues/8)). You can install [v9.02.65](https://github.com/Chaoses-Ib/IbLogiSoftExt/releases/download/v0.1/LGS.v9.02.65_x64.exe) to make the mouse driver available.
 
   e.g. `IbSendInit("Logitech")`
 
-- [Logitech Gaming Software](https://support.logi.com/hc/en-gb/articles/360025298053-Logitech-Gaming-Software)
+- [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html)
 
-  No Logitech hardware required.
+  No Logitech hardware required. However, in the new versions of G HUB, the mouse driver has been removed ([#8](https://github.com/Chaoses-Ib/IbInputSimulator/issues/8)). Unfortunately, there is currently no known way to install an old version.
 
   e.g. `IbSendInit("Logitech")`
 
 - [Razer Synapse 3](https://www.razer.com/synapse-3)
 
-  Require Razer hardware. (Note that the old versions do not require Razer hardware, however, Razer Synapse 3 only provides an online installer and there is no way to install an old version)
+  In the new versions of Razer Synapse, Razer hardware is required to make the driver available. The old versions do not require Razer hardware, but the online installer of Razer Synapse can only install the newest version. To install an old version manually, see [#7](https://github.com/Chaoses-Ib/IbInputSimulator/issues/7) for details.
 
   e.g. `IbSendInit("Razer")`
 
