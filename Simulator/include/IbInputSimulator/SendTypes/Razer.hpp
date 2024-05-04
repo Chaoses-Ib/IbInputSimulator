@@ -3,7 +3,7 @@
 #include "usb.hpp"
 
 namespace Send::Type::Internal {
-    class Razer final : virtual public Base, public VirtualKeyStates {
+    class Razer final : public VirtualKeyStates {
         HANDLE device;
 
         KeyboardModifiers modifiers;

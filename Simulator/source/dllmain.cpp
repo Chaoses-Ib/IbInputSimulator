@@ -165,7 +165,7 @@ DLLAPI void __stdcall IbSendDestroy() {
     if (!main::send)
         return;
     main::send->destroy();
-    main::send.release();
+    main::send.reset();
 }
 
 DLLAPI void __stdcall IbSendSyncKeyStates() {

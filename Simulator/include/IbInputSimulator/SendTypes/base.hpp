@@ -76,6 +76,7 @@ namespace Send::Type::Internal {
             this->get_key_state_fallback = get_key_state_fallback;
         }
 
+        virtual ~Base() = default;
         virtual void destroy() = 0;
 
         virtual uint32_t send_input(const INPUT inputs[], uint32_t n) {
@@ -139,7 +140,7 @@ namespace Send::Type::Internal {
         bool RGui : 1;
     };
 
-    class VirtualKeyStates : virtual public Base {
+    class VirtualKeyStates : public Base {
         KeyboardModifiers& modifiers;
         std::mutex& mutex;
 
