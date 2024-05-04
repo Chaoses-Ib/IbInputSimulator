@@ -229,7 +229,7 @@ namespace Send::Type::Internal {
         }
     };
 
-    class Logitech final : virtual public Base, public VirtualKeyStates {
+    class Logitech final : public VirtualKeyStates {
         LogitechDriver driver;
     public:
         Logitech() : VirtualKeyStates(keyboard_report.modifiers, keyboard_mutex) {}
