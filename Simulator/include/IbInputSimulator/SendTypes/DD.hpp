@@ -4,7 +4,7 @@
 #include "base.hpp"
 
 namespace Send::Type::Internal {
-    class DD final : virtual public Base, public VirtualKeyStates {
+    class DD final : public VirtualKeyStates {
         KeyboardModifiers modifiers;
         std::mutex keyboard_mutex;
 
