@@ -100,7 +100,7 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
 ```
 vcpkg install detours rapidjson --triplet=x64-windows-static
 ```
-CMake:
+CMake (or open the directory with Visual Studio and config it manually):
 ```
 mkdir build
 cd build
