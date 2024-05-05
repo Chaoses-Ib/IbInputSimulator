@@ -4,6 +4,8 @@
 ; Version: 0.4
 ; Git: https://github.com/Chaoses-Ib/IbInputSimulator
 
+#Requires AutoHotkey v2.0 64-bit
+
 #DllLoad "*i IbInputSimulator.dll"  ;DllCall("LoadLibrary") cannot locate DLL correctly
 
 IbSendInit(send_type := "AnyDriver", mode := 1, args*){
