@@ -144,10 +144,27 @@ namespace Send::Type::Internal {
             if (is_modifier(ki.wVk))
                 set_modifier_state(ki.wVk, keydown);
 
-            if (ki.wVk == VK_LWIN || ki.wVk == VK_RWIN)  //#TODO: Any other keys?
+            switch (ki.wVk)
+            {
+            case VK_SNAPSHOT:
+            case VK_INSERT:
+            case VK_HOME:
+            case VK_PRIOR:
+            case VK_DELETE:
+            case VK_END:
+            case VK_NEXT:
+            case VK_RIGHT:
+            case VK_LEFT:
+            case VK_DOWN:
+            case VK_UP:
+            case VK_LWIN:
+            case VK_RWIN:
                 control.ki.action = keydown ? 2 : 3;
-            else
+                break;
+            default:
                 control.ki.action = keydown ? 0 : 1;
+                break;
+            }
 
             if constexpr (debug)
                 DebugOStream() << L"send_keyboard_input: " << control.ki.key << ", " << control.ki.action << std::endl;
