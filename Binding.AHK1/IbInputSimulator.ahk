@@ -1,7 +1,7 @@
 ; IbInputSimulator (v1)
 ; Description: Enable AHK to send keystrokes by drivers.
 ; Author: Chaoses Ib
-; Version: 0.3
+; Version: 0.4
 ; Git: https://github.com/Chaoses-Ib/IbInputSimulator
 
 IbSendInit(send_type := "AnyDriver", mode := 1, args*){
@@ -15,7 +15,7 @@ IbSendInit(send_type := "AnyDriver", mode := 1, args*){
         else if (!FileExist("IbInputSimulator.dll"))
             throw "SendLibLoadFailed: Please put IbInputSimulator.dll with your script file (or use AHK v2 instead, which can locate those DLLs that are put with the library files)"
         else
-            throw "SendLibLoadFailed"
+            throw "SendLibLoadFailed: " A_LastError
     }
 
     if (send_type == "AnyDriver")

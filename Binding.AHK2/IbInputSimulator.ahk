@@ -1,7 +1,7 @@
 ; IbInputSimulator
 ; Description: Enable AHK to send keystrokes by drivers.
 ; Author: Chaoses Ib
-; Version: 0.3
+; Version: 0.4
 ; Git: https://github.com/Chaoses-Ib/IbInputSimulator
 
 #DllLoad "*i IbInputSimulator.dll"  ;DllCall("LoadLibrary") cannot locate DLL correctly
@@ -15,7 +15,7 @@ IbSendInit(send_type := "AnyDriver", mode := 1, args*){
         if (A_PtrSize == 4)
             throw "SendLibLoadFailed: Please use AutoHotkey x64"
         else
-            throw "SendLibLoadFailed"
+            throw "SendLibLoadFailed: " A_LastError
     }
     
     if (send_type == "AnyDriver")
