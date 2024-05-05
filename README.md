@@ -1,19 +1,36 @@
-# IbAhkSendLib
-Languages: [English](README.md), [简体中文](README.zh-Hans.md)  
-An [AutoHotkey](https://www.autohotkey.com/) library that enables AHK to send keystrokes by drivers.
+# IbInputSimulator
+A library for simulating keyboard and mouse input with drivers.
 
-## Supported Drivers
-* [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html)  
-  No Logitech hardware required.  
+## Download
+[Releases](https://github.com/Chaoses-Ib/IbInputSimulator/releases)
+
+## Supported drivers
+- [Logitech Gaming Software](https://support.logi.com/hc/en-gb/articles/360025298053-Logitech-Gaming-Software)
+
+  No Logitech hardware required. However, in the new versions of LGS, the mouse driver has been removed ([#8](https://github.com/Chaoses-Ib/IbInputSimulator/issues/8)). You can install [v9.02.65](https://github.com/Chaoses-Ib/IbLogiSoftExt/releases/download/v0.1/LGS.v9.02.65_x64.exe) to make the mouse driver available.
+
   e.g. `IbSendInit("Logitech")`
-* [Logitech Gaming Software](https://support.logi.com/hc/en-gb/articles/360025298053-Logitech-Gaming-Software)  
-  No Logitech hardware required.  
+
+- [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html)
+
+  No Logitech hardware required. However, in the new versions of G HUB, the mouse driver has been removed ([#8](https://github.com/Chaoses-Ib/IbInputSimulator/issues/8)). Unfortunately, there is currently no known way to install an old version.
+
   e.g. `IbSendInit("Logitech")`
-* [Razer Synapse 3](https://www.razer.com/synapse-3)  
-  No Razer hardware required, but it will be safer if you have one.  
+
+- [Razer Synapse 3](https://www.razer.com/synapse-3)
+
+  In the new versions of Razer Synapse, Razer hardware is required to make the driver available. The old versions do not require Razer hardware, but the online installer of Razer Synapse can only install the newest version. To install an old version manually, see [#7](https://github.com/Chaoses-Ib/IbInputSimulator/issues/7) for details.
+
   e.g. `IbSendInit("Razer")`
-* [DD Virtual Mouse & Virtual Keyboard](https://github.com/ddxoft/master)  
-  May cause a blue screen; difficult to uninstall cleanly; need network.  
+
+- [MouClassInputInjection](https://github.com/Chaoses-Ib/MouClassInputInjection)
+
+  e.g. `IbSendInit("MouClassInputInjection", 1, process_id)`
+
+- [DD Virtual Mouse & Virtual Keyboard](https://github.com/ddxoft/master)
+
+  May cause a blue screen; difficult to uninstall cleanly; need network.
+
   To use it, put the DLL (`DD94687.64.dll`/`DD64.dll`/`DDHID64.dll`) with your script file, and then:
   ```ahk
   IbSendInit("DD")
@@ -23,18 +40,29 @@ An [AutoHotkey](https://www.autohotkey.com/) library that enables AHK to send ke
   IbSendInit("DD", 1, "C:\SomeDir\DD64.dll")
   ```
 
-## Example
+- [EDI](https://t.me/Chaoses_Ib) (private, not for sale)
+
+## Software compatibility
+Software | SendInput | Logitech | Razer | MCII | DD | EDI | DM | Other
+--- | --- | --- | --- | --- | --- | --- | --- | ---
+Blade & Soul (Korean) <!--220703--> | | ✔️ | | | ❗ | ✔️ | ✔️ | ❌ SendInput hook
+Genshin | [High](https://meta.appinn.net/t/topic/44865/10?u=chaoses_ib)
+
+For SendInput, software with `High` indicates that the target process usually has a high integrity level, which may block SendInput due to UIPI. To put it simply, this means that you need to run the input simulator with administrator privileges.
+
+## Supported languages
+### AutoHotkey
 <table>
 <thead><tr>
-    <th>AHK v2</th>
-    <th>AHK v1</th>
+    <th>AutoHotkey v2</th>
+    <th>AutoHotkey v1</th>
 </tr></thead>
 <tbody>
     <tr>
         <td><pre lang="ahk">; Run Notepad, type "Hello world!"
 ; and then select all text by mouse.
 <br/>
-#Include "IbAhkSend.ahk"
+#Include "IbInputSimulator.ahk"
 <br/>
 IbSendInit()  ; IbSendInit("AnyDriver", 1)
 <br/>
@@ -50,8 +78,7 @@ MouseClickDrag("Left", 5, 5, 150, 50)</pre></td>
 ; and then select all text by mouse.
 <br/>
 #Include %A_ScriptDir%
-<br/>
-#Include IbAhkSend.ahk
+#Include IbInputSimulator.ahk
 <br/>
 IbSendInit() ; IbSendInit("AnyDriver", 1)
 <br/>
@@ -68,22 +95,41 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
 </tbody>
 </table>
 
-## Downloading
-[Releases](../../releases)
+## Build
+[vcpkg](https://github.com/microsoft/vcpkg):
+```
+vcpkg install detours rapidjson --triplet=x64-windows-static
+```
+CMake (or open the directory with Visual Studio and config it manually):
+```
+mkdir build
+cd build
+cmake .. -DCMAKE_TOOLCHAIN_FILE="C:\...\vcpkg\scripts\buildsystems\vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static
+cmake --build . --config Release
+```
 
-## See Also
-* [IbLogiSoftExt](https://github.com/Chaoses-Ib/IbLogiSoftExt)
+For the test you also need:
+```
+vcpkg install boost-test fmt
+```
+And add `-DBUILD_TESTING=ON` when calling `cmake ..` .
 
-## For Developers
-### Building
-1. Put [IbWinCppLib](https://github.com/Chaoses-Ib/IbWinCppLib/tree/master/WinCppLib/IbWinCppLib) in `C:\L\C++\packages` (in other locations you need to modify the .vcxproj files).
-1. [vcpkg](https://github.com/microsoft/vcpkg)
-    ```
-    set VCPKG_DEFAULT_TRIPLET=x64-windows-static-md
-    vcpkg install detours rapidjson
-    ```
-    For Test project you also need:
-    ```
-    vcpkg install boost-test fmt
-    ```
-    Change VCPKG_DEFAULT_TRIPLET to x86-windows-static-md if you need x86 version. 
+## See also
+- [IbLogiSoftExt](https://github.com/Chaoses-Ib/IbLogiSoftExt)
+
+## Credits
+- Logitech
+  - @Eagle1020
+  - [ekknod/logitech-cve](https://github.com/ekknod/logitech-cve) for learning that Logitech devices can be opened directly
+- Razer
+  - [Sadmeme/rzctl](https://github.com/Sadmeme/rzctl)
+  - @任性 for providing test environment
+
+Sponsors:
+
+Date | Sponsor | Comment
+--- | --- | ---
+2022-04-03 | 任性 | MouClassInputInjection
+2023-04-22 | 任性 | Logitech
+2023-02-28 | - |
+2021-08-28 | 任性 | Razer
