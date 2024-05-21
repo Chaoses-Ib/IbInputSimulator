@@ -24,6 +24,7 @@ namespace Send {
         AnyDriver,
         SendInput,
         Logitech,
+        LogitechGHubNew,
         Razer,
         DD,
         MouClassInputInjection

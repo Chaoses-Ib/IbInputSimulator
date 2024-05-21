@@ -122,6 +122,16 @@ DLLAPI Send::Error __stdcall IbSendInit(SendType type, InitFlags flags, void* ar
                 main::send = std::move(type);
             }
             break;
+        case SendType::LogitechGHubNew:
+            {
+                auto type = std::make_unique<Type::LogitechGHubNew>();
+                type->create_base(&SendInputHook::GetAsyncKeyState_real);
+                Error error = type->create();
+                if (error != Error::Success)
+                    return error;
+                main::send = std::move(type);
+            }
+            break;
         case SendType::Razer:
             {
                 auto type = std::make_unique<Type::Razer>();

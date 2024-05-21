@@ -13,6 +13,7 @@ namespace Send
         using Internal::Base;
         using Internal::SendInput;
         using Internal::Logitech;
+        using Internal::LogitechGHubNew;
         using Internal::Razer;
         using Internal::DD;
         using Internal::MouClassInputInjection;
