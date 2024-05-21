@@ -13,7 +13,7 @@ A library for simulating keyboard and mouse input with drivers.
 
 - [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html)
 
-  No Logitech hardware required. However, in the new versions of G HUB, the mouse driver has been removed ([#8](https://github.com/Chaoses-Ib/IbInputSimulator/issues/8)). Unfortunately, there is currently no known way to install an old version.
+  No Logitech hardware required.
 
   e.g. `IbSendInit("Logitech")`
 

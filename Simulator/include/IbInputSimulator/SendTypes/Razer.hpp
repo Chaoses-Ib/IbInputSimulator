@@ -99,7 +99,6 @@ namespace Send::Type::Internal {
             RzControl control{ .type = RzControl::Type::Mouse };
 
             if (mi.dwFlags & MOUSEEVENTF_MOVE) {
-                POINT move{ mi.dx, mi.dy };
                 if (mi.dwFlags & MOUSEEVENTF_ABSOLUTE) {
                     control.mi.Flags = MOUSE_MOVE_ABSOLUTE;
                 }

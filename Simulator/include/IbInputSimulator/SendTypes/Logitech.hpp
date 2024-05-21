@@ -125,13 +125,13 @@ namespace Send::Type::Internal {
                 MouseButton button;
                 Byte button_byte;
             };
-            int8_t x;
-            int8_t y;
+            int16_t x;
+            int16_t y;
             Byte unknown_W;  //#TODO: Wheel?
             Byte unknown_T;  //#TODO: T?
         private:
             void assert_size() {
-                static_assert(sizeof MouseReport == 5);
+                static_assert(sizeof MouseReport == 8);
             }
         };
 
@@ -269,17 +269,17 @@ namespace Send::Type::Internal {
                     mouse_screen_to_relative(move);
                 }
 
-                while (abs(move.x) > 127 || abs(move.y) > 127) {
-                    if (abs(move.x) > 127) {
-                        mouse_report.x = move.x > 0 ? 127 : -127;
+                while (abs(move.x) > SHRT_MAX || abs(move.y) > SHRT_MAX) {
+                    if (abs(move.x) > SHRT_MAX) {
+                        mouse_report.y = move.x > 0 ? SHRT_MAX : -SHRT_MAX;
                         move.x -= mouse_report.x;
                     }
                     else {
                         mouse_report.x = 0;
                     }
 
-                    if (abs(move.y) > 127) {
-                        mouse_report.y = move.y > 0 ? 127 : -127;
+                    if (abs(move.y) > SHRT_MAX) {
+                        mouse_report.y = move.y > 0 ? SHRT_MAX : -SHRT_MAX;
                         move.y -= mouse_report.y;
                     }
                     else {
@@ -289,8 +289,8 @@ namespace Send::Type::Internal {
                     driver.report_mouse(mouse_report, compensate_switch = -compensate_switch);
                 }
 
-                mouse_report.x = (uint8_t)move.x;
-                mouse_report.y = (uint8_t)move.y;
+                mouse_report.x = (int16_t)move.x;
+                mouse_report.y = (int16_t)move.y;
             } else {
                 mouse_report.x = 0;
                 mouse_report.y = 0;
