@@ -102,6 +102,9 @@ namespace Send::Type::Internal {
                 if (mi.dwFlags & MOUSEEVENTF_ABSOLUTE) {
                     control.mi.Flags = MOUSE_MOVE_ABSOLUTE;
                 }
+                if (mi.dwFlags & MOUSEEVENTF_VIRTUALDESK) {
+                    control.mi.Flags |= MOUSE_VIRTUAL_DESKTOP;
+                }
                 control.mi.LastX = mi.dx;
                 control.mi.LastY = mi.dy;
             }

@@ -253,15 +253,15 @@ namespace Send::Type::Internal {
         {
             if constexpr (std::is_same_v<T, int8_t>)
                 return INT8_MAX;
-            else if constexpr (std::is_same_v<T, int16_t>)
-                return INT16_MAX;
             else
-                static_assert(std::is_same_v<T, void>, "Unknown type");
+            {
+                static_assert(std::is_same_v<T, int16_t>, "Unknown type");
+                return INT16_MAX;
+            }
         }
 
     public:
         uint32_t send_mouse_input(const INPUT inputs[], uint32_t n) override {
-            update_screen_resolution();
             return Base::send_mouse_input(inputs, n);
         }
 
@@ -281,11 +281,14 @@ namespace Send::Type::Internal {
 
             //#TODO: move and then click, or click and then move? former?
 
-            //#TODO: MOUSEEVENTF_MOVE_NOCOALESCE, MOUSEEVENTF_VIRTUALDESK
+            //#TODO: MOUSEEVENTF_MOVE_NOCOALESCE
             if (mi.dwFlags & MOUSEEVENTF_MOVE) {
                 POINT move{ mi.dx, mi.dy };
                 if (mi.dwFlags & MOUSEEVENTF_ABSOLUTE) {
-                    mouse_absolute_to_screen(move);
+                    if (mi.dwFlags & MOUSEEVENTF_VIRTUALDESK)
+                        mouse_virtual_desk_absolute_to_screen(move);
+                    else
+                        mouse_absolute_to_screen(move);
                     mouse_screen_to_relative(move);
                 }
 
@@ -295,7 +298,7 @@ namespace Send::Type::Internal {
 
                 while (abs(move.x) > maxValue || abs(move.y) > maxValue) {
                     if (abs(move.x) > maxValue) {
-                        mouse_report.y = move.x > 0 ? maxValue : -maxValue;
+                        mouse_report.x = move.x > 0 ? maxValue : -maxValue;
                         move.x -= mouse_report.x;
                     }
                     else {

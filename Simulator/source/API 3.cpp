@@ -13,7 +13,7 @@ DLLAPI bool __stdcall IbSendMouseMove(uint32_t x, uint32_t y, Send::MoveMode mod
             .mouseData = 0,
             .dwFlags = [mode]() -> DWORD {
                 switch (mode) {
-                    case MoveMode::Absolute: return MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE;
+                    case MoveMode::Absolute: return MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK;
                     case MoveMode::Relative: return MOUSEEVENTF_MOVE;
                     default: assert(false);
                 }

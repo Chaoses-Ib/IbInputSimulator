@@ -65,7 +65,6 @@ namespace Send::Type::Internal {
         }
 
         uint32_t send_mouse_input(const INPUT inputs[], uint32_t n) override {
-            update_screen_resolution();
             return Base::send_mouse_input(inputs, n);
         }
 
@@ -74,7 +73,10 @@ namespace Send::Type::Internal {
             if (mi.dwFlags & MOUSEEVENTF_MOVE) {
                 POINT move{ mi.dx, mi.dy };
                 if (mi.dwFlags & MOUSEEVENTF_ABSOLUTE) {
-                    mouse_absolute_to_screen(move);
+                    if (mi.dwFlags & MOUSEEVENTF_VIRTUALDESK)
+                        mouse_virtual_desk_absolute_to_screen(move);
+                    else
+                        mouse_absolute_to_screen(move);
                     if constexpr (debug)
                         DebugOStream() << L"DD_mov: (" << move.x << L", " << move.y << L")\n";
                     DD_mov(move.x, move.y);
