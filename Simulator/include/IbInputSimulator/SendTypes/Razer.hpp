@@ -140,7 +140,7 @@ namespace Send::Type::Internal {
                     control.mi.ButtonFlags |= MOUSE_WHEEL;
                 else
                     control.mi.ButtonFlags |= MOUSE_HWHEEL;
-                control.mi.ButtonData = 120 * std::bit_cast<int32_t>(mi.mouseData);  //#TODO
+                control.mi.ButtonData = std::bit_cast<int32_t>(mi.mouseData);
             }
 
             if constexpr (debug)

@@ -224,7 +224,7 @@ namespace Send::Type::Internal {
             };
             int8_t x;
             int8_t y;
-            Byte unknown_W;  //#TODO: Wheel?
+            Byte wheel;
             Byte unknown_T;  //#TODO: T?
         private:
             void assert_size() {
@@ -323,6 +323,10 @@ namespace Send::Type::Internal {
                 mouse_report.y = 0;
             }
 
+            if (mi.dwFlags & MOUSEEVENTF_WHEEL) { // TODO MOUSEEVENTF_HWHEEL
+                mouse_report.wheel = std::bit_cast<int32_t>(mi.mouseData) > 0 ? 1 : -1;
+            }
+
 #define CODE_GENERATE(down, up, member)  \
             if (mi.dwFlags & down || mi.dwFlags & up)  \
                 mouse_report.button.##member = mi.dwFlags & down;
@@ -389,7 +393,7 @@ namespace Send::Type::Internal {
             };
             int16_t x;
             int16_t y;
-            Byte unknown_W;  //#TODO: Wheel?
+            Byte wheel;
             Byte unknown_T;  //#TODO: T?
         private:
             void assert_size() {
