@@ -19,7 +19,7 @@ A library for simulating keyboard and mouse input with drivers.
   
 - [Logitech G HUB new](https://www.logitechg.com/innovation/g-hub.html)
 
-  No Logitech hardware required. Works with new versions of the G HUB.
+  No Logitech hardware required. Works with new versions of the G HUB. Mouse input stops working after the first reboot following the installation of the G HUB. To restore mouse functionality, you may need to reinstall the software.
 
   e.g. `IbSendInit("LogitechGHubNew")`
 
