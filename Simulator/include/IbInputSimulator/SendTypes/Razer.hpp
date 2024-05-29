@@ -99,9 +99,11 @@ namespace Send::Type::Internal {
             RzControl control{ .type = RzControl::Type::Mouse };
 
             if (mi.dwFlags & MOUSEEVENTF_MOVE) {
-                POINT move{ mi.dx, mi.dy };
                 if (mi.dwFlags & MOUSEEVENTF_ABSOLUTE) {
                     control.mi.Flags = MOUSE_MOVE_ABSOLUTE;
+                }
+                if (mi.dwFlags & MOUSEEVENTF_VIRTUALDESK) {
+                    control.mi.Flags |= MOUSE_VIRTUAL_DESKTOP;
                 }
                 control.mi.LastX = mi.dx;
                 control.mi.LastY = mi.dy;
@@ -138,7 +140,7 @@ namespace Send::Type::Internal {
                     control.mi.ButtonFlags |= MOUSE_WHEEL;
                 else
                     control.mi.ButtonFlags |= MOUSE_HWHEEL;
-                control.mi.ButtonData = 120 * std::bit_cast<int32_t>(mi.mouseData);  //#TODO
+                control.mi.ButtonData = std::bit_cast<int32_t>(mi.mouseData);
             }
 
             if constexpr (debug)

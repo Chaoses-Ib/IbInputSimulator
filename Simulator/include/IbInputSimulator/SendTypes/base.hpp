@@ -47,18 +47,22 @@ namespace Send::Type::Internal {
             return false;
         }
 
-        POINT screen;
         void mouse_absolute_to_screen(POINT& absolute) const {
-            // absolute.x = round(x / screen.x * 65536)
-            absolute.x = absolute.x * screen.x / 65536;
-            absolute.y = absolute.y * screen.y / 65536;
-        }
-
-        void update_screen_resolution() {
-            screen.x = GetSystemMetrics(SM_CXSCREEN);  //#TODO: SM_CXVIRTUALSCREEN?
-            screen.y = GetSystemMetrics(SM_CYSCREEN);
+            const static int mainScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+            const static int mainScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
             // the overhead of WM_DISPLAYCHANGE is a bit high
+
+            absolute.x = MulDiv(absolute.x, mainScreenWidth, 65536);
+            absolute.y = MulDiv(absolute.y, mainScreenHeight, 65536);
+        }
+
+        void mouse_virtual_desk_absolute_to_screen(POINT& absolute) const {
+            const static int virtualDeskWidth = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+            const static int virtualDeskHeight = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+
+            absolute.x = MulDiv(absolute.x, virtualDeskWidth, 65536); 
+            absolute.y = MulDiv(absolute.y, virtualDeskHeight, 65536);
         }
 
         // need to call update_screen_resolution first

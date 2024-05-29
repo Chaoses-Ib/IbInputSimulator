@@ -120,21 +120,6 @@ namespace Send::Type::Internal {
             bool unknown : 3;
         };
 
-        struct MouseReport {
-            union {
-                MouseButton button;
-                Byte button_byte;
-            };
-            int8_t x;
-            int8_t y;
-            Byte unknown_W;  //#TODO: Wheel?
-            Byte unknown_T;  //#TODO: T?
-        private:
-            void assert_size() {
-                static_assert(sizeof MouseReport == 5);
-            }
-        };
-
     private:
         [[deprecated]] static LONG compensate_win_acceleration(LONG x) {
             //#TODO
@@ -167,40 +152,42 @@ namespace Send::Type::Internal {
             return x;
         }
 
-        static int8_t compensate_lgs_acceleration(int8_t x) {
-            int8_t abs_x = abs(x);
-            int8_t sign = x > 0 ? 1 : -1;
+        template <typename T>
+        static T compensate_lgs_acceleration(T x) {
+            T abs_x = abs(x);
+            T sign = x > 0 ? 1 : -1;
 
             if (abs_x <= 5)
                 return x;
             else if (abs_x <= 10)
                 return sign * (abs_x + 1);
             else
-                return sign * (int8_t)round(0.6156218196 * abs_x + 4.45777444629);
+                return sign * (T)round(0.6156218196 * abs_x + 4.45777444629);
         }
 
     public:
-        bool report_mouse(MouseReport report, int8_t compensate_switch) const {
+        template <class ReportType>
+        bool report_mouse(ReportType report, int8_t compensate_switch) const {
             constexpr DWORD IOCTL_BUSENUM_PLAY_MOUSEMOVE = 0x2A2010;
             DWORD bytes_returned;
 
             if (has_acceleration && (report.x || report.y)) {
-                MouseReport report11 = report;
+                ReportType report11 = report;
                 report11.x = report11.y = compensate_switch;
-                DeviceIoControl(device, IOCTL_BUSENUM_PLAY_MOUSEMOVE, &report11, sizeof MouseReport, nullptr, 0, &bytes_returned, nullptr);
+                DeviceIoControl(device, IOCTL_BUSENUM_PLAY_MOUSEMOVE, &report11, sizeof(ReportType), nullptr, 0, &bytes_returned, nullptr);
 
                 report.x = compensate_lgs_acceleration(report.x);
                 report.y = compensate_lgs_acceleration(report.y);
             }
 
             if constexpr (debug) {
-                bool success = DeviceIoControl(device, IOCTL_BUSENUM_PLAY_MOUSEMOVE, &report, sizeof MouseReport, nullptr, 0, &bytes_returned, nullptr);
+                bool success = DeviceIoControl(device, IOCTL_BUSENUM_PLAY_MOUSEMOVE, &report, sizeof(ReportType), nullptr, 0, &bytes_returned, nullptr);
                 DWORD error = GetLastError();
                 DebugOStream() << L"report_mouse: " << report.button_byte << L", " << report.x << L", " << report.y << L". "
                     << success << L", " << error << std::endl;
                 return success;
             }
-            return DeviceIoControl(device, IOCTL_BUSENUM_PLAY_MOUSEMOVE, &report, sizeof MouseReport, nullptr, 0, &bytes_returned, nullptr);
+            return DeviceIoControl(device, IOCTL_BUSENUM_PLAY_MOUSEMOVE, &report, sizeof(ReportType), nullptr, 0, &bytes_returned, nullptr);
         }
 
         struct KeyboardReport {
@@ -229,8 +216,22 @@ namespace Send::Type::Internal {
         }
     };
 
-    class Logitech final : public VirtualKeyStates {
-        LogitechDriver driver;
+    class Logitech : public VirtualKeyStates {
+        struct MouseReport {
+            union {
+                LogitechDriver::MouseButton button;
+                Byte button_byte;
+            };
+            int8_t x;
+            int8_t y;
+            Byte wheel;
+            Byte unknown_T;  //#TODO: T?
+        private:
+            void assert_size() {
+                static_assert(sizeof MouseReport == 5);
+            }
+        };
+
     public:
         Logitech() : VirtualKeyStates(keyboard_report.modifiers, keyboard_mutex) {}
 
@@ -242,44 +243,70 @@ namespace Send::Type::Internal {
             driver.destroy();
         }
 
-    private:
-        LogitechDriver::MouseReport mouse_report{};
+    protected:
+        LogitechDriver driver;
         uint8_t compensate_switch = -1;
         std::mutex mouse_mutex;
 
+        template <typename T>
+        static constexpr T max_value()
+        {
+            if constexpr (std::is_same_v<T, int8_t>)
+                return INT8_MAX;
+            else
+            {
+                static_assert(std::is_same_v<T, int16_t>, "Unknown type");
+                return INT16_MAX;
+            }
+        }
+
     public:
         uint32_t send_mouse_input(const INPUT inputs[], uint32_t n) override {
-            update_screen_resolution();
             return Base::send_mouse_input(inputs, n);
         }
 
-        bool send_mouse_input(const MOUSEINPUT& mi) override {
+        virtual bool send_mouse_input(const MOUSEINPUT& mi) override {
+            return send_mouse_report<MouseReport>(mi);
+        }
+
+        template <class ReportType>
+        bool send_mouse_report(const MOUSEINPUT& mi)
+        {
             std::lock_guard lock(mouse_mutex);
             
             if constexpr (debug)
                 DebugOStream() << L"send_mouse_input: " << mi.dwFlags << L", " << mi.dx << L", " << mi.dy << std::endl;
 
+            ReportType mouse_report{};
+
             //#TODO: move and then click, or click and then move? former?
 
-            //#TODO: MOUSEEVENTF_MOVE_NOCOALESCE, MOUSEEVENTF_VIRTUALDESK
+            //#TODO: MOUSEEVENTF_MOVE_NOCOALESCE
             if (mi.dwFlags & MOUSEEVENTF_MOVE) {
-                POINT move { mi.dx, mi.dy };
+                POINT move{ mi.dx, mi.dy };
                 if (mi.dwFlags & MOUSEEVENTF_ABSOLUTE) {
-                    mouse_absolute_to_screen(move);
+                    if (mi.dwFlags & MOUSEEVENTF_VIRTUALDESK)
+                        mouse_virtual_desk_absolute_to_screen(move);
+                    else
+                        mouse_absolute_to_screen(move);
                     mouse_screen_to_relative(move);
                 }
 
-                while (abs(move.x) > 127 || abs(move.y) > 127) {
-                    if (abs(move.x) > 127) {
-                        mouse_report.x = move.x > 0 ? 127 : -127;
+                static_assert(std::is_same_v<decltype(mouse_report.x), decltype(mouse_report.y)>);
+                using CoordinatesType = decltype(mouse_report.x);
+                constexpr auto maxValue = max_value<CoordinatesType>();
+
+                while (abs(move.x) > maxValue || abs(move.y) > maxValue) {
+                    if (abs(move.x) > maxValue) {
+                        mouse_report.x = move.x > 0 ? maxValue : -maxValue;
                         move.x -= mouse_report.x;
                     }
                     else {
                         mouse_report.x = 0;
                     }
 
-                    if (abs(move.y) > 127) {
-                        mouse_report.y = move.y > 0 ? 127 : -127;
+                    if (abs(move.y) > maxValue) {
+                        mouse_report.y = move.y > 0 ? maxValue : -maxValue;
                         move.y -= mouse_report.y;
                     }
                     else {
@@ -289,11 +316,15 @@ namespace Send::Type::Internal {
                     driver.report_mouse(mouse_report, compensate_switch = -compensate_switch);
                 }
 
-                mouse_report.x = (uint8_t)move.x;
-                mouse_report.y = (uint8_t)move.y;
+                mouse_report.x = (CoordinatesType)move.x;
+                mouse_report.y = (CoordinatesType)move.y;
             } else {
                 mouse_report.x = 0;
                 mouse_report.y = 0;
+            }
+
+            if (mi.dwFlags & MOUSEEVENTF_WHEEL) { // TODO MOUSEEVENTF_HWHEEL
+                mouse_report.wheel = std::bit_cast<int32_t>(mi.mouseData) > 0 ? 1 : -1;
             }
 
 #define CODE_GENERATE(down, up, member)  \
@@ -351,5 +382,30 @@ namespace Send::Type::Internal {
             return driver.report_keyboard(keyboard_report);
         }
 #pragma warning(suppress : 4250)  //'class1' : inherits 'class2::member' via dominance
+    };
+
+    // new Ghub send type, same as Logitech but with another types in MouseReport struct
+    class LogitechGHubNew : public Logitech {
+        struct MouseReport {
+            union {
+                LogitechDriver::MouseButton button;
+                Byte button_byte;
+            };
+            int16_t x;
+            int16_t y;
+            Byte wheel;
+            Byte unknown_T;  //#TODO: T?
+        private:
+            void assert_size() {
+                static_assert(sizeof MouseReport == 8);
+            }
+        };
+
+    public:
+        LogitechGHubNew() = default;
+
+        bool send_mouse_input(const MOUSEINPUT& mi) override {
+            return Logitech::send_mouse_report<MouseReport>(mi);
+        }
     };
 }

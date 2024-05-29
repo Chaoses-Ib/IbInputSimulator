@@ -13,9 +13,15 @@ A library for simulating keyboard and mouse input with drivers.
 
 - [Logitech G HUB](https://www.logitechg.com/innovation/g-hub.html)
 
-  No Logitech hardware required. However, in the new versions of G HUB, the mouse driver has been removed ([#8](https://github.com/Chaoses-Ib/IbInputSimulator/issues/8)). Unfortunately, there is currently no known way to install an old version.
+  No Logitech hardware required. Supports old version of the G HUB([#8](https://github.com/Chaoses-Ib/IbInputSimulator/issues/8)).
 
   e.g. `IbSendInit("Logitech")`
+  
+- [Logitech G HUB new](https://www.logitechg.com/innovation/g-hub.html)
+
+  No Logitech hardware required. Works with new versions of the G HUB. Mouse input stops working after the first reboot following the installation of the G HUB. To restore mouse functionality, you may need to reinstall the software.
+
+  e.g. `IbSendInit("LogitechGHubNew")`
 
 - [Razer Synapse 3](https://www.razer.com/synapse-3)
 
