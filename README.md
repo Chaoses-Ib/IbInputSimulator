@@ -1,9 +1,6 @@
 # IbInputSimulator
 A library for simulating keyboard and mouse input with drivers.
 
-## Download
-[Releases](https://github.com/Chaoses-Ib/IbInputSimulator/releases)
-
 ## Supported drivers
 - [Logitech Gaming Software](https://support.logi.com/hc/en-gb/articles/360025298053-Logitech-Gaming-Software)
 
@@ -57,7 +54,16 @@ Genshin | [High](https://meta.appinn.net/t/topic/44865/10?u=chaoses_ib)
 For SendInput, software with `High` indicates that the target process usually has a high integrity level, which may block SendInput due to UIPI. To put it simply, this means that you need to run the input simulator with administrator privileges.
 
 ## Supported languages
+### C++
+[Build](docs/README.md#build)
+
+See [InputSimulator.hpp](Simulator/include/IbInputSimulator/InputSimulator.hpp) for the API.
+
 ### AutoHotkey
+Download: [Releases](https://github.com/Chaoses-Ib/IbInputSimulator/releases)
+
+Usage:
+
 <table>
 <thead><tr>
     <th>AutoHotkey v2</th>
@@ -101,27 +107,12 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
 </tbody>
 </table>
 
-## Build
-[vcpkg](https://github.com/microsoft/vcpkg):
-```
-vcpkg install detours rapidjson --triplet=x64-windows-static
-```
-CMake (or open the directory with Visual Studio and config it manually):
-```
-mkdir build
-cd build
-cmake .. -DCMAKE_TOOLCHAIN_FILE="C:\...\vcpkg\scripts\buildsystems\vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static
-cmake --build . --config Release
-```
+## Related projects
+- [GameMate: Macro Activator & Crosshair Timer](https://github.com/Pennywise007/GameMate)
 
-For the test you also need:
-```
-vcpkg install boost-test fmt
-```
-And add `-DBUILD_TESTING=ON` when calling `cmake ..` .
+  GameMate is a powerful Windows application designed to enhance your productivity and gaming experience. It allows you to customize key bindings for different applications, add a crosshair overlay for games, block accidental key presses, track your time efficiently, and automate complex sequences of actions.
 
-## See also
-- [IbLogiSoftExt](https://github.com/Chaoses-Ib/IbLogiSoftExt)
+- [IbLogiSoftExt: An extension for Logitech Gaming Software. Support sending G-keys to AutoHotkey.](https://github.com/Chaoses-Ib/IbLogiSoftExt)
 
 ## Credits
 - Logitech
