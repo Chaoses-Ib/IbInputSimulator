@@ -106,7 +106,7 @@ namespace Send::Type::Internal {
                     control.mi.Flags |= MOUSE_VIRTUAL_DESKTOP;
                 }
                 control.mi.LastX = mi.dx;
-                control.mi.LastY = mi.dy;
+                control.mi.LastY = (LONG)std::round(mi.dy / 1.2);
             }
 
             if (mi.dwFlags & MOUSEEVENTF_LEFTDOWN)
