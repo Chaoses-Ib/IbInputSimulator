@@ -1,8 +1,8 @@
 ; IbInputSimulator (v1)
 ; Description: Enable AHK to send keystrokes by drivers.
-; Author: Chaoses Ib
-; Version: 0.4
-; Git: https://github.com/Chaoses-Ib/IbInputSimulator
+; Authors: Chaoses-Ib, Pennywise007
+; Version: 0.4.1
+; Homepage: https://github.com/Chaoses-Ib/IbInputSimulator
 
 IbSendInit(send_type := "AnyDriver", mode := 1, args*){
     workding_dir := A_WorkingDir
@@ -24,6 +24,8 @@ IbSendInit(send_type := "AnyDriver", mode := 1, args*){
         result := DllCall("IbInputSimulator\IbSendInit", "Int", 1, "Int", 0, "Ptr", 0, "Int")
     else if (send_type == "Logitech")
         result := DllCall("IbInputSimulator\IbSendInit", "Int", 2, "Int", 0, "Ptr", 0, "Int")
+    else if (send_type == "LogitechGHubNew")
+        result := DllCall("IbInputSimulator\IbSendInit", "Int", 6, "Int", 0, "Ptr", 0, "Int")
     else if (send_type == "Razer")
         result := DllCall("IbInputSimulator\IbSendInit", "Int", 3, "Int", 0, "Ptr", 0, "Int")
     else if (send_type == "DD"){
