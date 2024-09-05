@@ -30,6 +30,12 @@ add_library(IbInputSimulator SHARED ${sourceFiles})
 target_compile_features(IbInputSimulator PUBLIC cxx_std_20)
 target_compile_definitions(IbInputSimulator PRIVATE IB_INPUT_DLLEXPORT)
 
+set(PROJECT_VERSION_MAJOR 0)
+set(PROJECT_VERSION_MINOR 4)
+set(PROJECT_VERSION_PATCH 1)
+configure_file(source/resource.rc.cmake.in resource.rc @ONLY)
+target_sources(IbInputSimulator PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/resource.rc")
+
 target_include_directories(IbInputSimulator
     PUBLIC include
     PRIVATE ${DETOURS_INCLUDE_DIR}
