@@ -8,7 +8,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 include(FetchContent)
 FetchContent_Declare(IbWinCpp
     GIT_REPOSITORY https://github.com/Chaoses-Ib/IbWinCppLib.git
-    GIT_TAG        a29ac95537f403ac5ae221cb744d3e82076efbf7
+    GIT_TAG        f630f0e3a2c757652298c626fcd52469e5d5bc81
 )
 FetchContent_MakeAvailable(IbWinCpp)
 

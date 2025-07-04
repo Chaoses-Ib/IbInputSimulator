@@ -199,20 +199,20 @@ namespace Send::Type::Internal {
             Byte keys[6];
         private:
             void assert_size() {
-                static_assert(sizeof KeyboardReport == 8);
+                static_assert(sizeof(KeyboardReport) == 8);
             }
         };
 
         bool report_keyboard(KeyboardReport report) const {
             DWORD bytes_returned;
             if constexpr (debug) {
-                bool success = DeviceIoControl(device, 0x2A200C, &report, sizeof KeyboardReport, nullptr, 0, &bytes_returned, nullptr);
+                bool success = DeviceIoControl(device, 0x2A200C, &report, sizeof(KeyboardReport), nullptr, 0, &bytes_returned, nullptr);
                 DWORD error = GetLastError();
                 DebugOStream() << L"report_keyboard: " << report.modifiers_byte << L", " << report.keys[0] << L", " << report.keys[1] << L". "
                     << success << L", " << error << std::endl;
                 return success;
             }
-            return DeviceIoControl(device, 0x2A200C, &report, sizeof KeyboardReport, nullptr, 0, &bytes_returned, nullptr);
+            return DeviceIoControl(device, 0x2A200C, &report, sizeof(KeyboardReport), nullptr, 0, &bytes_returned, nullptr);
         }
     };
 
@@ -228,7 +228,7 @@ namespace Send::Type::Internal {
             Byte unknown_T;  //#TODO: T?
         private:
             void assert_size() {
-                static_assert(sizeof MouseReport == 5);
+                static_assert(sizeof(MouseReport) == 5);
             }
         };
 
@@ -397,7 +397,7 @@ namespace Send::Type::Internal {
             Byte unknown_T;  //#TODO: T?
         private:
             void assert_size() {
-                static_assert(sizeof MouseReport == 8);
+                static_assert(sizeof(MouseReport) == 8);
             }
         };
 

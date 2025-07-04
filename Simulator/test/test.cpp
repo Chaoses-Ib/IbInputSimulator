@@ -113,7 +113,7 @@ public:
 
 		capture = true;
 		measure.begin();
-		IbSendInput(2, inputs, sizeof INPUT);
+		IbSendInput(2, inputs, sizeof(INPUT));
 
 		uint64_t t1 = measure.end();
 		
@@ -162,11 +162,11 @@ public:
 		for (size_t i = 0; i < 10000 / 200; i++) {
 			input.mi.dx = input.mi.dy = 1;
 			for (size_t i = 0; i < 100; i++)
-				IbSendInput(1, &input, sizeof INPUT);
+				IbSendInput(1, &input, sizeof(INPUT));
 
 			input.mi.dx = input.mi.dy = -1;
 			for (size_t i = 0; i < 100; i++)
-				IbSendInput(1, &input, sizeof INPUT);
+				IbSendInput(1, &input, sizeof(INPUT));
 		}
 		uint64_t t = measure.end();
 
@@ -191,7 +191,7 @@ public:
 		input.mi = {};
 		input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_MOVE_NOCOALESCE;
 		input.mi.dx = input.mi.dy = 100;
-		IbSendInput(1, &input, sizeof INPUT);
+		IbSendInput(1, &input, sizeof(INPUT));
 
 		measure.begin();
 		do {
@@ -217,7 +217,7 @@ public:
 		input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_MOVE_NOCOALESCE | MOUSEEVENTF_ABSOLUTE;
 		input.mi.dx = 65536 * 100 / screen.x;
 		input.mi.dy = 65536 * 100 / screen.y;
-		IbSendInput(1, &input, sizeof INPUT);
+		IbSendInput(1, &input, sizeof(INPUT));
 
 		POINT p1, p2;
 		GetCursorPos(&p1);
@@ -240,7 +240,7 @@ public:
 			input.mi = {};
 			input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_MOVE_NOCOALESCE;
 			input.mi.dx = input.mi.dy = movement;
-			IbSendInput(1, &input, sizeof INPUT);
+			IbSendInput(1, &input, sizeof(INPUT));
 
 			GetCursorPos(&p2);
 			d1 = { p2.x - p1.x, p2.y - p1.y };

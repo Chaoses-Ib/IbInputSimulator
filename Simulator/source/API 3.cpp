@@ -22,7 +22,7 @@ DLLAPI bool __stdcall IbSendMouseMove(uint32_t x, uint32_t y, Send::MoveMode mod
             .dwExtraInfo = 0
         }
     };
-    return IbSendInput(1, &input, sizeof INPUT);
+    return IbSendInput(1, &input, sizeof(INPUT));
 }
 
 DLLAPI bool __stdcall IbSendMouseClick(Send::MouseButton button) {
@@ -42,28 +42,28 @@ DLLAPI bool __stdcall IbSendMouseClick(Send::MouseButton button) {
         case MouseButton::Left:
             inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
             inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
-            return IbSendInput(2, inputs, sizeof INPUT) == 2;
+            return IbSendInput(2, inputs, sizeof(INPUT)) == 2;
         case MouseButton::Right:
             inputs[0].mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
             inputs[1].mi.dwFlags = MOUSEEVENTF_RIGHTUP;
-            return IbSendInput(2, inputs, sizeof INPUT) == 2;
+            return IbSendInput(2, inputs, sizeof(INPUT)) == 2;
         case MouseButton::Middle:
             inputs[0].mi.dwFlags = MOUSEEVENTF_MIDDLEDOWN;
             inputs[1].mi.dwFlags = MOUSEEVENTF_MIDDLEUP;
-            return IbSendInput(2, inputs, sizeof INPUT) == 2;
+            return IbSendInput(2, inputs, sizeof(INPUT)) == 2;
         case MouseButton::XButton1:
             inputs[0].mi.dwFlags = MOUSEEVENTF_XDOWN;
             inputs[1].mi.dwFlags = MOUSEEVENTF_XUP;
             inputs[0].mi.mouseData = inputs[1].mi.mouseData = XBUTTON1;
-            return IbSendInput(2, inputs, sizeof INPUT) == 2;
+            return IbSendInput(2, inputs, sizeof(INPUT)) == 2;
         case MouseButton::XButton2:
             inputs[0].mi.dwFlags = MOUSEEVENTF_XDOWN;
             inputs[1].mi.dwFlags = MOUSEEVENTF_XUP;
             inputs[0].mi.mouseData = inputs[1].mi.mouseData = XBUTTON2;
-            return IbSendInput(2, inputs, sizeof INPUT) == 2;
+            return IbSendInput(2, inputs, sizeof(INPUT)) == 2;
         default:
             inputs[0].mi.dwFlags = static_cast<DWORD>(button);
-            return IbSendInput(1, inputs, sizeof INPUT);
+            return IbSendInput(1, inputs, sizeof(INPUT));
     }
 }
 
@@ -79,7 +79,7 @@ DLLAPI bool __stdcall IbSendMouseWheel(int32_t movement) {
             .dwExtraInfo = 0
         }
     };
-    return IbSendInput(1, &input, sizeof INPUT);
+    return IbSendInput(1, &input, sizeof(INPUT));
 }
 
 DLLAPI bool __stdcall IbSendKeybdDown(uint16_t vk) {
@@ -93,7 +93,7 @@ DLLAPI bool __stdcall IbSendKeybdDown(uint16_t vk) {
             .dwExtraInfo = 0
         }
     };
-    return IbSendInput(1, &input, sizeof INPUT);
+    return IbSendInput(1, &input, sizeof(INPUT));
 }
 
 DLLAPI bool __stdcall IbSendKeybdUp(uint16_t vk) {
@@ -107,7 +107,7 @@ DLLAPI bool __stdcall IbSendKeybdUp(uint16_t vk) {
             .dwExtraInfo = 0
         }
     };
-    return IbSendInput(1, &input, sizeof INPUT);
+    return IbSendInput(1, &input, sizeof(INPUT));
 }
 
 DLLAPI bool __stdcall IbSendKeybdDownUp(uint16_t vk, Send::KeyboardModifiers modifiers) {
@@ -157,5 +157,5 @@ DLLAPI bool __stdcall IbSendKeybdDownUp(uint16_t vk, Send::KeyboardModifiers mod
     CODE_GENERATE(VK_LCONTROL, LCtrl)
 #undef CODE_GENERATE
 
-    return IbSendInput(i, inputs, sizeof INPUT) == i;
+    return IbSendInput(i, inputs, sizeof(INPUT)) == i;
 }

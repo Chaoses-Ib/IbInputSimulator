@@ -91,7 +91,7 @@ namespace Send::Type::Internal {
             };
         private:
             void assert_size() {
-                static_assert(sizeof RzControl == 32);
+                static_assert(sizeof(RzControl) == 32);
             }
         };
 

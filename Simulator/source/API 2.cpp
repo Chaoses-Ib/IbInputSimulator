@@ -21,7 +21,7 @@ DLLAPI VOID WINAPI IbSend_mouse_event(
             .dwExtraInfo = dwExtraInfo
         }
     };
-    IbSendInput(1, &input, sizeof INPUT);
+    IbSendInput(1, &input, sizeof(INPUT));
 }
 
 DLLAPI VOID WINAPI IbSend_keybd_event(
@@ -40,5 +40,5 @@ DLLAPI VOID WINAPI IbSend_keybd_event(
             .dwExtraInfo = dwExtraInfo
         }
     };
-    IbSendInput(1, &input, sizeof INPUT);
+    IbSendInput(1, &input, sizeof(INPUT));
 }
