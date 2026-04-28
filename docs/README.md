@@ -12,6 +12,14 @@ cmake .. -DCMAKE_TOOLCHAIN_FILE="C:\...\vcpkg\scripts\buildsystems\vcpkg.cmake" 
 cmake --build . --config Release
 ```
 
+### Build as a static library
+
+You need to add `-BUILD_SHARED_LIBS=ON` when calling `cmake ..` .
+
+Also you need to add a preprocessor definition to your project: `IB_INPUT_STATIC`.
+
+### Test build
+
 For the test you also need:
 ```
 vcpkg install boost-test fmt

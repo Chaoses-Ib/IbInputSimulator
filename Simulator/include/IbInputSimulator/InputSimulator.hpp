@@ -2,10 +2,12 @@
 #include <Windows.h>
 #include <stdint.h>
 
-#ifdef IB_INPUT_DLLEXPORT
-#define DLLAPI extern "C" __declspec(dllexport)
+#ifdef IB_INPUT_STATIC
+    #define DLLAPI extern "C"
+#elif defined(IB_INPUT_DLLEXPORT)
+    #define DLLAPI extern "C" __declspec(dllexport)
 #else
-#define DLLAPI extern "C" __declspec(dllimport)
+    #define DLLAPI extern "C" __declspec(dllimport)
 #endif
 
 namespace Send {
@@ -117,7 +119,7 @@ namespace Send {
         bool LAlt : 1;    //0x04
         bool LWin : 1;    //0x08
         bool RCtrl : 1;   //0x10
-        bool RShift : 1;  //0x20  
+        bool RShift : 1;  //0x20
         bool RAlt : 1;    //0x40
         bool RWin : 1;    //0x80
     };
