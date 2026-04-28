@@ -2,7 +2,15 @@ cmake_minimum_required(VERSION 3.15)
 
 project(IbInputSimulator)
 
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+option(BUILD_SHARED_LIBS "Build as shared library (DLL) instead of static library" ON)
+
+# Default: MultiThreaded$<$<CONFIG:Debug>:Debug>DLL
+# BUILD_SHARED_LIBS is mainly for AHK, which uses MT. So we follow it.
+if(BUILD_SHARED_LIBS)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+else()
+    set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+endif()
 
 # IbWinCppLib
 include(FetchContent)
@@ -10,7 +18,12 @@ FetchContent_Declare(IbWinCpp
     GIT_REPOSITORY https://github.com/Chaoses-Ib/IbWinCppLib.git
     GIT_TAG        f630f0e3a2c757652298c626fcd52469e5d5bc81
 )
+
+# Save and restore BUILD_SHARED_LIBS to avoid affecting other dependencies
+set(_BUILD_SHARED_LIBS_SAVED ${BUILD_SHARED_LIBS})
+set(BUILD_SHARED_LIBS OFF)
 FetchContent_MakeAvailable(IbWinCpp)
+set(BUILD_SHARED_LIBS ${_BUILD_SHARED_LIBS_SAVED})
 
 # Detours
 find_path(DETOURS_INCLUDE_DIR detours/detours.h)
@@ -26,9 +39,16 @@ set(sourceFiles
     "API 3.cpp"
 )
 list(TRANSFORM sourceFiles PREPEND source/)
-add_library(IbInputSimulator SHARED ${sourceFiles})
+
+if(BUILD_SHARED_LIBS)
+    add_library(IbInputSimulator SHARED ${sourceFiles})
+    target_compile_definitions(IbInputSimulator PRIVATE IB_INPUT_DLLEXPORT)
+else()
+    add_library(IbInputSimulator STATIC ${sourceFiles})
+    target_compile_definitions(IbInputSimulator PRIVATE IB_INPUT_STATIC)
+endif()
+
 target_compile_features(IbInputSimulator PUBLIC cxx_std_20)
-target_compile_definitions(IbInputSimulator PRIVATE IB_INPUT_DLLEXPORT)
 
 set(PROJECT_VERSION_MAJOR 0)
 set(PROJECT_VERSION_MINOR 4)

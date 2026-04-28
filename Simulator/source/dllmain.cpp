@@ -3,6 +3,7 @@ using namespace Send;
 
 #include <IbInputSimulator/SendTypes/types.hpp>
 
+#ifdef IB_INPUT_DLLEXPORT
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
@@ -22,6 +23,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     }
     return TRUE;
 }
+#endif
 
 namespace main {
     static std::unique_ptr<Type::Base> send;
