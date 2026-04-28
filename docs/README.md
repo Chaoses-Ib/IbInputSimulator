@@ -14,7 +14,7 @@ cmake --build . --config Release
 
 ### Build as a static library
 
-You need to add `-BUILD_SHARED_LIBS=ON` when calling `cmake ..` .
+You need to add `-BUILD_SHARED_LIBS=OFF` when calling `cmake ..` .
 
 Also you need to add a preprocessor definition to your project: `IB_INPUT_STATIC`.
 

@@ -4,7 +4,13 @@ project(IbInputSimulator)
 
 option(BUILD_SHARED_LIBS "Build as shared library (DLL) instead of static library" ON)
 
-set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+# Default: MultiThreaded$<$<CONFIG:Debug>:Debug>DLL
+# BUILD_SHARED_LIBS is mainly for AHK, which uses MT. So we follow it.
+if(BUILD_SHARED_LIBS)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+else()
+    set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+endif()
 
 # IbWinCppLib
 include(FetchContent)
@@ -12,6 +18,7 @@ FetchContent_Declare(IbWinCpp
     GIT_REPOSITORY https://github.com/Chaoses-Ib/IbWinCppLib.git
     GIT_TAG        f630f0e3a2c757652298c626fcd52469e5d5bc81
 )
+
 # Save and restore BUILD_SHARED_LIBS to avoid affecting other dependencies
 set(_BUILD_SHARED_LIBS_SAVED ${BUILD_SHARED_LIBS})
 set(BUILD_SHARED_LIBS OFF)
