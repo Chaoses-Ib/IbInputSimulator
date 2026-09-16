@@ -115,6 +115,7 @@ MouseClickDrag, Left, 5, 5, 150, 50</pre></td>
 - [IbLogiSoftExt: An extension for Logitech Gaming Software. Support sending G-keys to AutoHotkey.](https://github.com/Chaoses-Ib/IbLogiSoftExt)
 
 ## Credits
+- [@Pennywise007](https://github.com/Pennywise007) for making many contributions.
 - Logitech
   - @Eagle1020
   - [ekknod/logitech-cve](https://github.com/ekknod/logitech-cve) for learning that Logitech devices can be opened directly
@@ -126,6 +127,7 @@ Sponsors:
 
 Date | Sponsor | Comment
 --- | --- | ---
+2026-09-16 | [@Pennywise007](https://github.com/Pennywise007)
 2025-09-15 | @16Hexa | [HAP 网络授权保护系统：集成了强大安全防护与灵活授权管理的一站式解决方案](https://16hex.cc/)
 2022-04-03 | 任性 | MouClassInputInjection
 2023-04-22 | 任性 | Logitech
