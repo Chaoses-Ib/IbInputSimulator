@@ -4,12 +4,12 @@ project(IbInputSimulator)
 
 option(BUILD_SHARED_LIBS "Build as shared library (DLL) instead of static library" ON)
 
-# Default: MultiThreaded$<$<CONFIG:Debug>:Debug>DLL
+# Default: MultiThreaded$<$<CONFIG:Debug>:Debug>
 # BUILD_SHARED_LIBS is mainly for AHK, which uses MT. So we follow it.
 if(BUILD_SHARED_LIBS)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 else()
-    set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 endif()
 
 # IbWinCppLib
@@ -24,6 +24,12 @@ set(_BUILD_SHARED_LIBS_SAVED ${BUILD_SHARED_LIBS})
 set(BUILD_SHARED_LIBS OFF)
 FetchContent_MakeAvailable(IbWinCpp)
 set(BUILD_SHARED_LIBS ${_BUILD_SHARED_LIBS_SAVED})
+# Set IbWinCpp output directory for static builds
+if(NOT BUILD_SHARED_LIBS AND TARGET IbWinCpp)
+    set_target_properties(IbWinCpp PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    )
+endif()
 
 # Detours
 find_path(DETOURS_INCLUDE_DIR detours/detours.h)
@@ -61,7 +67,7 @@ target_include_directories(IbInputSimulator
     PRIVATE ${DETOURS_INCLUDE_DIR}
 )
 target_link_libraries(IbInputSimulator
-    PRIVATE IbWinCpp    
+    PRIVATE IbWinCpp
     PRIVATE ${DETOURS_LIBRARY}
     PRIVATE rapidjson
 )
