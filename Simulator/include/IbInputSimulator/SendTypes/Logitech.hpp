@@ -214,6 +214,32 @@ namespace Send::Type::Internal {
             }
             return DeviceIoControl(device, 0x2A200C, &report, sizeof(KeyboardReport), nullptr, 0, &bytes_returned, nullptr);
         }
+
+        enum class DeviceReportId : int {
+            Keyboard = 0x6B,
+            Mouse = 0x6D,
+        };
+
+        struct EnableDeviceReport {
+            int size = 8;
+            DeviceReportId id;
+        private:
+            void assert_size() {
+                static_assert(sizeof(EnableDeviceReport) == 8);
+            }
+        };
+
+        bool report_enable_device(EnableDeviceReport report) const {
+            DWORD bytes_returned;
+            if constexpr (debug) {
+                bool success = DeviceIoControl(device, 0x2A2040, &report, sizeof(EnableDeviceReport), &report, sizeof(EnableDeviceReport), &bytes_returned, nullptr);
+                DWORD error = GetLastError();
+                DebugOStream() << L"report_enable_device: " << report.size << L", " << static_cast<int>(report.id) << L". "
+                    << success << L", " << error << std::endl;
+                return success;
+            }
+            return DeviceIoControl(device, 0x2A2040, &report, sizeof(EnableDeviceReport), &report, sizeof(EnableDeviceReport), &bytes_returned, nullptr);
+        }
     };
 
     class Logitech : public VirtualKeyStates {
@@ -403,6 +429,15 @@ namespace Send::Type::Internal {
 
     public:
         LogitechGHubNew() = default;
+
+        Error create() {
+            Error error = Logitech::create();
+            if (error != Error::Success)
+                return error;
+
+            driver.report_enable_device({ .id = LogitechDriver::DeviceReportId::Mouse });
+            return Error::Success;
+        }
 
         bool send_mouse_input(const MOUSEINPUT& mi) override {
             return Logitech::send_mouse_report<MouseReport>(mi);
